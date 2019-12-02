@@ -22,9 +22,6 @@ public class ExaminationApplicationInitListener extends ApplicationInitListener 
 	@Autowired
 	private ArrowheadService arrowheadService;
 	
-	@Value(ClientCommonConstants.$TOKEN_SECURITY_FILTER_ENABLED_WD)
-	private boolean tokenSecurityFilterEnabled;
-	
 	@Value(CommonConstants.$SERVER_SSL_ENABLED_WD)
 	private boolean sslEnabled;
 	
@@ -39,12 +36,6 @@ public class ExaminationApplicationInitListener extends ApplicationInitListener 
 
 		//Checking the availability of necessary core systems
 		checkCoreSystemReachability(CoreSystem.SERVICE_REGISTRY);
-		if (sslEnabled && tokenSecurityFilterEnabled) {
-			checkCoreSystemReachability(CoreSystem.AUTHORIZATION);			
-
-			//Initialize Arrowhead Context
-			arrowheadService.updateCoreServiceURIs(CoreSystem.AUTHORIZATION);			
-		}		
 		
 		//TODO: implement here any custom behavior on application start up
 	}

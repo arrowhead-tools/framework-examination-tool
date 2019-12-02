@@ -10,8 +10,14 @@
 	
 	<groupId>eu.arrowhead</groupId>
 	<artifactId>framework-examination-tool</artifactId>
-	<version>1.0.0</version>
+	<version>${revision}</version>
+	<packaging>pom</packaging>
 	<name>Arrowhead Framework Examination Tool</name>
+	
+	<properties>
+		<base.version>1.0.0</base.version>
+		<revision>${base.version}</revision>
+	</properties>
 	
 	<licenses>
     	<license>
@@ -19,14 +25,19 @@
 	     	<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
 	   </license>
   	</licenses>
-	
-	<repositories>
+  	
+  	<repositories>
 		<repository>
 			<id>arrowhead-client</id>
 			<url>https://github.com/arrowhead-f/client-library-java-spring/raw/master/client-mvn-repo</url>
 		</repository>
 	</repositories>
 	
+	<modules>
+	    <module>system-operator-module</module>
+		<module>application-system-module</module>
+  	</modules>
+		
 	<dependencies>
 		<dependency>
 			<groupId>eu.arrowhead</groupId>
@@ -40,40 +51,7 @@
 			<plugin>
     			<groupId>org.springframework.boot</groupId>
     			<artifactId>spring-boot-maven-plugin</artifactId>
-    			<executions>
-    				<execution>
-    					<goals>
-    						<goal>repackage</goal>
-    					</goals>
-    				</execution>
-    			</executions>
-  			</plugin>
-  			
-  			<plugin>
-	 			<artifactId>maven-resources-plugin</artifactId>
-	        	<version>3.1.0</version>
-	        	<executions>
-	          		<execution>
-	            		<id>copy-resources</id>
-	            		<phase>validate</phase>
-		            	<goals>
-		              		<goal>copy-resources</goal>
-		            	</goals>
-		            	<configuration>
-		              		<outputDirectory>${basedir}/target</outputDirectory>
-		              		<resources>
-		                		<resource>
-		                  			<directory>src/main/resources</directory>
-		                  			<includes>
-		                  				<include>application.properties</include>
-		                  			</includes>
-		                		</resource>
-		              		</resources>
-		            	</configuration>
-	          		</execution>
-	        	</executions>
-	      	</plugin>
-		</plugins>
-	</build>
-	
+  			</plugin>  			  			
+  		</plugins>
+  	</build>	
 </project>

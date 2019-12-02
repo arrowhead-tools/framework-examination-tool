@@ -1,4 +1,4 @@
-package eu.arrowhead.client.skeleton.provider.security;
+package eu.arrowhead.tool.examination.security;
 
 import java.util.Map;
 
@@ -11,7 +11,7 @@ import eu.arrowhead.common.security.AccessControlFilter;
 
 @Component
 @ConditionalOnExpression(CommonConstants.$SERVER_SSL_ENABLED_WD + " and !" + ClientCommonConstants.$TOKEN_SECURITY_FILTER_ENABLED_WD)
-public class ProviderAccessControlFilter extends AccessControlFilter {
+public class ExaminationAccessControlFilter extends AccessControlFilter {
 	
 	@Override
 	protected void checkClientAuthorized(final String clientCN, final String method, final String requestTarget, final String requestJSON, final Map<String,String[]> queryParams) {

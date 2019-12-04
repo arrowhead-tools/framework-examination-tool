@@ -1,4 +1,4 @@
-package eu.arrowhead.tool.examination;
+package eu.arrowhead.tool.examination.config;
 
 import java.io.IOException;
 import java.security.KeyStore;
@@ -37,6 +37,9 @@ public class ExaminationApplicationListener {
 	@Autowired
 	protected SSLProperties sslProperties;
 	
+	@Autowired
+	protected SysopSSLProperties sysopSSLProperties;
+	
 	protected final Logger logger = LogManager.getLogger(ExaminationApplicationListener.class);
 	
 	//=================================================================================================
@@ -56,27 +59,22 @@ public class ExaminationApplicationListener {
 		
 		if (sslProperties.isSslEnabled()) {
 			final KeyStore keyStore = initializeKeyStore();
-			checkServerCertificate(keyStore, event.getApplicationContext());
-			obtainKeys(keyStore, event.getApplicationContext());
+			checkServerCertificate(keyStore, event.getApplicationContext(), false);
+			obtainKeys(keyStore, event.getApplicationContext(), false);
+			final KeyStore sysopKeyStore = initializeKeyStoreSysop();
+			checkServerCertificate(sysopKeyStore, event.getApplicationContext(), true);
+			obtainKeys(sysopKeyStore, event.getApplicationContext(), true);
 		}
-		
-		customInit(event);
 	}
 	
 	//-------------------------------------------------------------------------------------------------
 	@PreDestroy
 	public void destroy() throws InterruptedException {
-		customDestroy();
+		
 	}	
 
 	//=================================================================================================
 	// assistant methods
-	
-	//-------------------------------------------------------------------------------------------------
-	protected void customInit(final ContextRefreshedEvent event) {}
-	
-	//-------------------------------------------------------------------------------------------------
-	protected void customDestroy() {}
 	
 	//-------------------------------------------------------------------------------------------------
 	protected String getModeString() {
@@ -100,7 +98,23 @@ public class ExaminationApplicationListener {
 	}
 	
 	//-------------------------------------------------------------------------------------------------
-	private void checkServerCertificate(final KeyStore keyStore, final ApplicationContext appContext) {
+	private KeyStore initializeKeyStoreSysop() throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
+		logger.debug("initializeKeyStore started...");
+		Assert.isTrue(sysopSSLProperties.isSslEnabled(), "SSL is not enabled.");
+		final String messageNotDefined = " is not defined.";
+		Assert.isTrue(!Utilities.isEmpty(sysopSSLProperties.getKeyStoreType()), "Sysop" + CommonConstants.KEYSTORE_TYPE + messageNotDefined);
+		Assert.notNull(sysopSSLProperties.getKeyStore(), "sysop." + CommonConstants.KEYSTORE_PATH + messageNotDefined);
+		Assert.isTrue(sysopSSLProperties.getKeyStore().exists(), "sysop." + CommonConstants.KEYSTORE_PATH + " file is not found.");
+		Assert.notNull(sysopSSLProperties.getKeyStorePassword(), "sysop." + CommonConstants.KEYSTORE_PASSWORD + messageNotDefined);
+		
+		final KeyStore keystore = KeyStore.getInstance(sysopSSLProperties.getKeyStoreType());
+		keystore.load(sysopSSLProperties.getKeyStore().getInputStream(), sysopSSLProperties.getKeyStorePassword().toCharArray());
+
+		return keystore;
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	private void checkServerCertificate(final KeyStore keyStore, final ApplicationContext appContext, final boolean isSysop) {
 		logger.debug("checkServerCertificate started...");
 		final X509Certificate serverCertificate = Utilities.getFirstCertFromKeyStore(keyStore);
 		final String serverCN = Utilities.getCertCNFromSubject(serverCertificate.getSubjectDN().getName());
@@ -112,19 +126,28 @@ public class ExaminationApplicationListener {
 		
 		@SuppressWarnings("unchecked")
 		final Map<String,Object> context = appContext.getBean(CommonConstants.ARROWHEAD_CONTEXT, Map.class);
-		context.put(CommonConstants.SERVER_COMMON_NAME, serverCN);
+		if (isSysop) {
+			context.put("sysop." + CommonConstants.SERVER_COMMON_NAME, serverCN);
+		} else {
+			context.put(CommonConstants.SERVER_COMMON_NAME, serverCN);			
+		}
 	}
 	
 	//-------------------------------------------------------------------------------------------------
-	private void obtainKeys(final KeyStore keyStore, final ApplicationContext appContext) {
+	private void obtainKeys(final KeyStore keyStore, final ApplicationContext appContext, final boolean isSysop) {
 		logger.debug("obtainKeys started...");
 		@SuppressWarnings("unchecked")
 		final Map<String,Object> context = appContext.getBean(CommonConstants.ARROWHEAD_CONTEXT, Map.class);
 		
-		context.put(CommonConstants.SERVER_PUBLIC_KEY, Utilities.getFirstCertFromKeyStore(keyStore).getPublicKey());
-		
-		final PrivateKey privateKey = Utilities.getPrivateKey(keyStore, sslProperties.getKeyPassword());
-		context.put(CommonConstants.SERVER_PRIVATE_KEY, privateKey);
+		if (isSysop) {
+			context.put("sysop." + CommonConstants.SERVER_PUBLIC_KEY, Utilities.getFirstCertFromKeyStore(keyStore).getPublicKey());		
+			final PrivateKey privateKey = Utilities.getPrivateKey(keyStore, sysopSSLProperties.getKeyPassword());
+			context.put("sysop." + CommonConstants.SERVER_PRIVATE_KEY, privateKey);
+		} else {
+			context.put(CommonConstants.SERVER_PUBLIC_KEY, Utilities.getFirstCertFromKeyStore(keyStore).getPublicKey());		
+			final PrivateKey privateKey = Utilities.getPrivateKey(keyStore, sslProperties.getKeyPassword());
+			context.put(CommonConstants.SERVER_PRIVATE_KEY, privateKey);
+		}		
 	}
 	
 }

@@ -13,7 +13,8 @@ import org.springframework.http.HttpMethod;
 
 import eu.arrowhead.common.CommonConstants;
 import eu.arrowhead.common.Utilities;
-import eu.arrowhead.common.http.HttpService;
+import eu.arrowhead.tool.examination.config.ExaminationHttpService;
+import eu.arrowhead.tool.examination.config.HttpActor;
 import eu.arrowhead.tool.examination.util.ExminationUtil;
 
 @SpringBootApplication
@@ -21,7 +22,7 @@ import eu.arrowhead.tool.examination.util.ExminationUtil;
 public class ExaminationMain implements ApplicationRunner {
 	
 	@Autowired
-	private HttpService httpService;
+	private ExaminationHttpService httpService;
 	
 	@Value(CommonConstants.$SERVER_SSL_ENABLED_WD)
 	private boolean sslEnabled;
@@ -53,7 +54,7 @@ public class ExaminationMain implements ApplicationRunner {
 	
 	private void checkCoreSystems() {
 		try {
-			httpService.sendRequest(Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceReqistryAddress, serviceRegistryPort, CommonConstants.SERVICE_REGISTRY_URI + CommonConstants.ECHO_URI), HttpMethod.GET, String.class);
+			httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceReqistryAddress, serviceRegistryPort, CommonConstants.SERVICE_REGISTRY_URI + CommonConstants.ECHO_URI), HttpMethod.GET, String.class);
 			logger.info("Service Registry Core System is reachable on: " + serviceReqistryAddress + ":" + serviceRegistryPort);
 		} catch (Exception ex) {
 			logger.info("Service Registry Core System is not reachable on: " + serviceReqistryAddress + ":" + serviceRegistryPort);

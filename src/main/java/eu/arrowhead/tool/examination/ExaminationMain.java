@@ -60,6 +60,5 @@ public class ExaminationMain implements ApplicationRunner {
 			logger.debug(ex.getMessage());
 		}
 		
-		
 	}
 }

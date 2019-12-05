@@ -24,6 +24,7 @@
 .vscode/
 wrapper
 */target
+/report/
 /mvnw
 /mvnw.cmd
 /.settings

@@ -19,6 +19,7 @@ import eu.arrowhead.common.dto.shared.SystemResponseDTO;
 import eu.arrowhead.tool.examination.config.CoreSystems;
 import eu.arrowhead.tool.examination.config.ExaminationHttpService;
 import eu.arrowhead.tool.examination.config.HttpActor;
+import eu.arrowhead.tool.examination.config.Reporter;
 import eu.arrowhead.tool.examination.controller.dto.SystemListResponseDTO;
 import eu.arrowhead.tool.examination.use_case.ApplicationSystemUseCase;
 import eu.arrowhead.tool.examination.use_case.SystemOperatorUseCase;
@@ -55,6 +56,7 @@ public class ExaminationMain implements ApplicationRunner {
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	public void run(final ApplicationArguments args) throws Exception {
+		new Reporter();
 		checkCoreSystems();
 		runUseCases();
 	}
@@ -63,17 +65,18 @@ public class ExaminationMain implements ApplicationRunner {
 	// assistant methods
 	
 	private void checkCoreSystems() {
+		ResponseEntity<SystemListResponseDTO> systemListDTO = null;
 		try {
 			httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort, CommonConstants.SERVICE_REGISTRY_URI + CommonConstants.ECHO_URI), HttpMethod.GET, String.class);
 			logger.info(CoreSystem.SERVICE_REGISTRY.name() + " Core System is reachable on: " + serviceRegistryAddress + ":" + serviceRegistryPort);
 			CoreSystems.serviceRegistryAddress = serviceRegistryAddress;
 			CoreSystems.serviceRegistryPort = serviceRegistryPort;
+			systemListDTO = httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort, MgmtUri.GET_SYSTEMS), HttpMethod.GET, SystemListResponseDTO.class);
 		} catch (final Exception ex) {
 			logger.info(CoreSystem.SERVICE_REGISTRY.name() + " Core System is not reachable on: " + serviceRegistryAddress + ":" + serviceRegistryPort);
 			logger.debug(ex.getMessage());
 		}
 		
-		final ResponseEntity<SystemListResponseDTO> systemListDTO = httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort, MgmtUri.GET_SYSTEMS), HttpMethod.GET, SystemListResponseDTO.class);
 		for (final SystemResponseDTO system : systemListDTO.getBody().getData()) {
 			for (final CoreSystem	coreSystem : CoreSystem.values()) {
 				if (system.getSystemName().equalsIgnoreCase(coreSystem.name()) && !system.getSystemName().equalsIgnoreCase(CoreSystem.SERVICE_REGISTRY.name())) {

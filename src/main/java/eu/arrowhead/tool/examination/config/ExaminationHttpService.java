@@ -2,6 +2,7 @@ package eu.arrowhead.tool.examination.config;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -9,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -161,7 +163,11 @@ public class ExaminationHttpService {
 
 		final HttpEntity<P> entity = getHttpEntity(payload);
 		try {
-			return usedTemplate.exchange(uri.toUri(), method, entity, responseType);
+			final long sent = System.nanoTime();
+			final ResponseEntity<T> response = usedTemplate.exchange(uri.toUri(), method, entity, responseType);
+			final long received = System.nanoTime();
+			reportLatency(sent, received, uri, method);
+			return response;
 		} catch (final ResourceAccessException ex) {
 			if (ex.getMessage().contains(ERROR_MESSAGE_PART_PKIX_PATH)) {
 				logger.error("The system at {} is not part of the same certificate chain of trust!", uri.toUriString());
@@ -304,5 +310,18 @@ public class ExaminationHttpService {
 									 .setSocketTimeout(socketTimeout)
 									 .setConnectionRequestTimeout(connectionManagerTimeout)
 									 .build();
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	private void reportLatency(final long sentNanoSecond, final long receivedNanoSecond,final UriComponents uri, final HttpMethod method) {
+		final int nanoSecondToMilliSecond = 1000000;
+		final List<String[]> reportSet = new ArrayList<>();
+		final String endpoint = method + " " + uri.toUriString();
+		reportSet.add(new String[] { String.valueOf(sentNanoSecond / nanoSecondToMilliSecond), endpoint, String.valueOf((receivedNanoSecond - sentNanoSecond) / nanoSecondToMilliSecond) });
+		try {
+			Reporter.report(reportSet);
+		} catch (IOException | URISyntaxException ex) {
+			logger.error("Latency report file writing error occured");
+		}
 	}
 }

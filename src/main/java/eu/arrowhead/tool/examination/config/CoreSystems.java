@@ -19,7 +19,7 @@ public class CoreSystems {
 	// methods
 	
 	//-------------------------------------------------------------------------------------------------
-	public static UriComponents gerServiceRegistryUri(final String path) {
+	public static UriComponents getServiceRegistryUri(final String path) {
 		return Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort, path);
 	}
 }

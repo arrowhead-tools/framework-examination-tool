@@ -16,9 +16,16 @@ import eu.arrowhead.tool.examination.util.MgmtUri;
 @Component
 public class RegisterSytems extends SystemOperatorUseCase {
 	
+	//=================================================================================================
+	// members
+	
 	@Autowired
 	private ExaminationHttpService httpService;
 
+	//=================================================================================================
+	// methods
+	
+	//-------------------------------------------------------------------------------------------------
 	@Override
 	public void start() {
 		SystemRequestDTO systemRequestDTO = new SystemRequestDTO();
@@ -26,7 +33,7 @@ public class RegisterSytems extends SystemOperatorUseCase {
 		systemRequestDTO.setAddress("10.10.10.10");
 		systemRequestDTO.setPort(8888);
 		
-		ResponseEntity<SystemResponseDTO> sendRequest = httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, CoreSystems.gerServiceRegistryUri(MgmtUri.REGISTER_SYSTEM), HttpMethod.POST, SystemResponseDTO.class, systemRequestDTO);
+		ResponseEntity<SystemResponseDTO> sendRequest = httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.REGISTER_SYSTEM), HttpMethod.POST, SystemResponseDTO.class, systemRequestDTO);
 		
 		System.out.println(sendRequest.getBody().getId());
 	}

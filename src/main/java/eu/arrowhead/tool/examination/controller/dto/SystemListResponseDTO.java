@@ -1,4 +1,4 @@
-package eu.arrowhead.tool.examination.controller.sysop_dto;
+package eu.arrowhead.tool.examination.controller.dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;

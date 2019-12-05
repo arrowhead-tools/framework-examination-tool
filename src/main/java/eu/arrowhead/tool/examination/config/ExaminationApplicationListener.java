@@ -64,6 +64,7 @@ public class ExaminationApplicationListener {
 			final KeyStore sysopKeyStore = initializeKeyStoreSysop();
 			checkServerCertificate(sysopKeyStore, event.getApplicationContext(), true);
 			obtainKeys(sysopKeyStore, event.getApplicationContext(), true);
+			CoreSystems.sslEnabled = sslProperties.isSslEnabled();
 		}
 	}
 	

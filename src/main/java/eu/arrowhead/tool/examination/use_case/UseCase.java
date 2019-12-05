@@ -1,5 +1,7 @@
 package eu.arrowhead.tool.examination.use_case;
 
-public class UseCase {
-
+public interface UseCase {
+	
+	public void start();
+	
 }

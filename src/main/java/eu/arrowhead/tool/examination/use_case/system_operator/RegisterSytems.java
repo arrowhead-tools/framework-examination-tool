@@ -28,7 +28,7 @@ public class RegisterSytems extends SystemOperatorUseCase {
 		systemRequestDTO.setAddress("10.10.10.10");
 		systemRequestDTO.setPort(8888);
 		
-		ResponseEntity<SystemResponseDTO> sendRequest = send(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.REGISTER_SYSTEM), HttpMethod.POST, SystemResponseDTO.class, systemRequestDTO);
+		ResponseEntity<SystemResponseDTO> sendRequest = request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.REGISTER_SYSTEM), HttpMethod.POST, SystemResponseDTO.class, systemRequestDTO);
 		
 		System.out.println(sendRequest.getBody().getId());
 	}

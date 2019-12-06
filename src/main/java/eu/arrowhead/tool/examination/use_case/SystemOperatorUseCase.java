@@ -11,6 +11,9 @@ import eu.arrowhead.tool.examination.config.ExaminationHttpService;
 import eu.arrowhead.tool.examination.config.HttpActor;
 
 public class SystemOperatorUseCase implements UseCase {
+	
+	//=================================================================================================
+	// members
 
 	@Autowired
 	protected ExaminationHttpService httpService;
@@ -30,17 +33,17 @@ public class SystemOperatorUseCase implements UseCase {
 	}
 	
 	//-------------------------------------------------------------------------------------------------
-	protected <T,P> ResponseEntity<T> send(final HttpActor actor, final UriComponents uri, final HttpMethod method, final Class<T> responseType, final P payload) {
+	protected <T,P> ResponseEntity<T> request(final HttpActor actor, final UriComponents uri, final HttpMethod method, final Class<T> responseType, final P payload) {
 		return httpService.sendRequest(actor, uri, method, responseType, payload, null, this.getClass().getSimpleName());
 	}
 	
 	//-------------------------------------------------------------------------------------------------
-	protected <T> ResponseEntity<T> send(final HttpActor actor, final UriComponents uri, final HttpMethod method, final Class<T> responseType, final SSLContext givenContext) {
+	protected <T> ResponseEntity<T> request(final HttpActor actor, final UriComponents uri, final HttpMethod method, final Class<T> responseType, final SSLContext givenContext) {
 		return httpService.sendRequest(actor, uri, method, responseType, null, givenContext, this.getClass().getSimpleName());
 	}
 	
 	//-------------------------------------------------------------------------------------------------
-	public <T> ResponseEntity<T> send(final HttpActor actor, final UriComponents uri, final HttpMethod method, final Class<T> responseType) {
+	protected <T> ResponseEntity<T> request(final HttpActor actor, final UriComponents uri, final HttpMethod method, final Class<T> responseType) {
 		return httpService.sendRequest(actor, uri, method, responseType, null, null, this.getClass().getSimpleName());
 	}
 }

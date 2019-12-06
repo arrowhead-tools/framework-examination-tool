@@ -134,7 +134,7 @@ public class ExaminationHttpService {
 	}
 	
 	//-------------------------------------------------------------------------------------------------
-	public <T,P> ResponseEntity<T> sendRequest(final HttpActor actor, final UriComponents uri, final HttpMethod method, final Class<T> responseType, final P payload, final SSLContext givenContext) {
+	public <T,P> ResponseEntity<T> sendRequest(final HttpActor actor, final UriComponents uri, final HttpMethod method, final Class<T> responseType, final P payload, final SSLContext givenContext, final String useCase) {
 		Assert.notNull(method, "Request method is not defined.");
 		logger.debug("Sending {} request to: {}", method, uri);
 		
@@ -166,7 +166,7 @@ public class ExaminationHttpService {
 			final long sent = System.nanoTime();
 			final ResponseEntity<T> response = usedTemplate.exchange(uri.toUri(), method, entity, responseType);
 			final long received = System.nanoTime();
-			reportLatency(sent, received, uri, method);
+			reportLatency(sent, received, uri, method, useCase);
 			return response;
 		} catch (final ResourceAccessException ex) {
 			if (ex.getMessage().contains(ERROR_MESSAGE_PART_PKIX_PATH)) {
@@ -184,18 +184,18 @@ public class ExaminationHttpService {
 	}
 	
 	//-------------------------------------------------------------------------------------------------
-	public <T,P> ResponseEntity<T> sendRequest(final HttpActor actor, final UriComponents uri, final HttpMethod method, final Class<T> responseType, final P payload) {
-		return sendRequest(actor, uri, method, responseType, payload, null);
+	public <T,P> ResponseEntity<T> sendRequest(final HttpActor actor, final UriComponents uri, final HttpMethod method, final Class<T> responseType, final P payload, final String useCase) {
+		return sendRequest(actor, uri, method, responseType, payload, null, useCase);
 	}
 	
 	//-------------------------------------------------------------------------------------------------
-	public <T> ResponseEntity<T> sendRequest(final HttpActor actor, final UriComponents uri, final HttpMethod method, final Class<T> responseType, final SSLContext givenContext) {
-		return sendRequest(actor, uri, method, responseType, null, givenContext);
+	public <T> ResponseEntity<T> sendRequest(final HttpActor actor, final UriComponents uri, final HttpMethod method, final Class<T> responseType, final SSLContext givenContext, final String useCase) {
+		return sendRequest(actor, uri, method, responseType, null, givenContext, useCase);
 	}
 	
 	//-------------------------------------------------------------------------------------------------
-	public <T> ResponseEntity<T> sendRequest(final HttpActor actor, final UriComponents uri, final HttpMethod method, final Class<T> responseType) {
-		return sendRequest(actor, uri, method, responseType, null, null);
+	public <T> ResponseEntity<T> sendRequest(final HttpActor actor, final UriComponents uri, final HttpMethod method, final Class<T> responseType,final String useCase) {
+		return sendRequest(actor, uri, method, responseType, null, null, useCase);
 	}
 	
 	//=================================================================================================
@@ -313,11 +313,11 @@ public class ExaminationHttpService {
 	}
 	
 	//-------------------------------------------------------------------------------------------------
-	private void reportLatency(final long sentNanoSecond, final long receivedNanoSecond,final UriComponents uri, final HttpMethod method) {
+	private void reportLatency(final long sentNanoSecond, final long receivedNanoSecond,final UriComponents uri, final HttpMethod method, final String useCase) {
 		final int nanoSecondToMilliSecond = 1000000;
 		final List<String[]> reportSet = new ArrayList<>();
 		final String endpoint = method + " " + uri.toUriString();
-		reportSet.add(new String[] { String.valueOf(sentNanoSecond / nanoSecondToMilliSecond), endpoint, String.valueOf((receivedNanoSecond - sentNanoSecond) / nanoSecondToMilliSecond) });
+		reportSet.add(new String[] { useCase, String.valueOf(sentNanoSecond / nanoSecondToMilliSecond), endpoint, String.valueOf((receivedNanoSecond - sentNanoSecond) / nanoSecondToMilliSecond) });
 		try {
 			Reporter.report(reportSet);
 		} catch (IOException | URISyntaxException ex) {

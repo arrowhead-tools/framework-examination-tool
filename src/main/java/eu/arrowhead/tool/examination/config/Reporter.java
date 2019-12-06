@@ -16,7 +16,7 @@ public class Reporter {
 	// members
 	
 	private static String filePath;
-	private static final String DATA_SET_HEADER = "request_sent_ms, endpoint, latency_ms\n";
+	private static final String DATA_SET_HEADER = "use_case, request_sent_ms, endpoint, latency_ms\n";
 	
 	//=================================================================================================
 	// methods

@@ -67,11 +67,13 @@ public class ExaminationMain implements ApplicationRunner {
 	private void checkCoreSystems() {
 		ResponseEntity<SystemListResponseDTO> systemListDTO = null;
 		try {
-			httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort, CommonConstants.SERVICE_REGISTRY_URI + CommonConstants.ECHO_URI), HttpMethod.GET, String.class);
+			httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort,
+									CommonConstants.SERVICE_REGISTRY_URI + CommonConstants.ECHO_URI), HttpMethod.GET, String.class, "CheckCoreSystems");
 			logger.info(CoreSystem.SERVICE_REGISTRY.name() + " Core System is reachable on: " + serviceRegistryAddress + ":" + serviceRegistryPort);
 			CoreSystems.serviceRegistryAddress = serviceRegistryAddress;
 			CoreSystems.serviceRegistryPort = serviceRegistryPort;
-			systemListDTO = httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort, MgmtUri.GET_SYSTEMS), HttpMethod.GET, SystemListResponseDTO.class);
+			systemListDTO = httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort, MgmtUri.GET_SYSTEMS),
+													HttpMethod.GET, SystemListResponseDTO.class, "CheckCoreSystems");
 		} catch (final Exception ex) {
 			logger.info(CoreSystem.SERVICE_REGISTRY.name() + " Core System is not reachable on: " + serviceRegistryAddress + ":" + serviceRegistryPort);
 			logger.debug(ex.getMessage());
@@ -84,7 +86,8 @@ public class ExaminationMain implements ApplicationRunner {
 					final int port = system.getPort();
 					logger.info(coreSystem.name() + " is registered");
 					try {
-						httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), address, port, ExminationUtil.getCoreSystemUri(coreSystem) + CommonConstants.ECHO_URI), HttpMethod.GET, String.class);
+						httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), address, port,
+												ExminationUtil.getCoreSystemUri(coreSystem) + CommonConstants.ECHO_URI), HttpMethod.GET, String.class, "CheckCoreSystems");
 						logger.info(coreSystem.name() + " Core System is reachable on: " + address + ":" + port);
 					} catch (final Exception ex) {
 						logger.info(coreSystem.name() + " Core System is not reachable on: " + address + ":" + port);

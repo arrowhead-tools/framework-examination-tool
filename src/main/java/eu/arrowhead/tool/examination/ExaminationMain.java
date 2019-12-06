@@ -72,7 +72,7 @@ public class ExaminationMain implements ApplicationRunner {
 			logger.info(CoreSystem.SERVICE_REGISTRY.name() + " Core System is reachable on: " + serviceRegistryAddress + ":" + serviceRegistryPort);
 			CoreSystems.serviceRegistryAddress = serviceRegistryAddress;
 			CoreSystems.serviceRegistryPort = serviceRegistryPort;
-			systemListDTO = httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort, MgmtUri.GET_SYSTEMS),
+			systemListDTO = httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort, MgmtUri.SERVICE_REGISTRY_SYSTEMS),
 													HttpMethod.GET, SystemListResponseDTO.class, "CheckCoreSystems");
 		} catch (final Exception ex) {
 			logger.info(CoreSystem.SERVICE_REGISTRY.name() + " Core System is not reachable on: " + serviceRegistryAddress + ":" + serviceRegistryPort);
@@ -100,10 +100,14 @@ public class ExaminationMain implements ApplicationRunner {
 	
 	private void runUseCases() {
 		for (SystemOperatorUseCase uc : UseCasesToRun.getSystemOperator()) {
+			logger.info("SYSOP use case started: " + uc.getClass().getSimpleName());
 			uc.start();
+			logger.info("SYSOP use case finished: " + uc.getClass().getSimpleName());
 		}
 		for (ApplicationSystemUseCase uc : UseCasesToRun.getApplicationSystem()) {
+			logger.info("APP use case started: " + uc.getClass().getSimpleName());
 			uc.start();
+			logger.info("APP use case finished: " + uc.getClass().getSimpleName());
 		}
 	}
 }

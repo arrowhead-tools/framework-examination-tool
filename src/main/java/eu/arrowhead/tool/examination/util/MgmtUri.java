@@ -5,8 +5,9 @@ public class MgmtUri {
 	//=================================================================================================
 	// members
 
-	public static final String GET_SYSTEMS = "/serviceregistry/mgmt/systems";
-	public static final String REGISTER_SYSTEM = "/serviceregistry/mgmt/systems";
+	public static final String SERVICE_REGISTRY = "/serviceregistry/mgmt";
+	public static final String SERVICE_REGISTRY_SYSTEMS = "/serviceregistry/mgmt/systems";
+	
 	
 	//=================================================================================================
 	// methods

@@ -24,7 +24,7 @@ public class RegisterProviderWithService extends SystemOperatorUseCase {
 	
 	//-------------------------------------------------------------------------------------------------
 	@Override
-	public void start() {
+	public void runUseCase() {
 		SystemRequestDTO providerDTO = ExminationUtil.generateSystemRequestDTO();
 		ServiceRegistryRequestDTO serviceRegistryRequestDTO = ExminationUtil.generateServiceRegistryRequestDTO(providerDTO);
 		request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_SYSTEMS), HttpMethod.POST, SystemResponseDTO.class, providerDTO);

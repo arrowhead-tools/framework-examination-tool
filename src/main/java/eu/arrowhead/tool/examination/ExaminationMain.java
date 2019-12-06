@@ -100,14 +100,10 @@ public class ExaminationMain implements ApplicationRunner {
 	
 	private void runUseCases() {
 		for (SystemOperatorUseCase uc : UseCasesToRun.getSystemOperator()) {
-			logger.info("SYSOP use case started: " + uc.getClass().getSimpleName());
 			uc.start();
-			logger.info("SYSOP use case finished: " + uc.getClass().getSimpleName());
 		}
 		for (ApplicationSystemUseCase uc : UseCasesToRun.getApplicationSystem()) {
-			logger.info("APP use case started: " + uc.getClass().getSimpleName());
 			uc.start();
-			logger.info("APP use case finished: " + uc.getClass().getSimpleName());
 		}
 	}
 }

@@ -20,6 +20,7 @@ import eu.arrowhead.tool.examination.config.CoreSystems;
 import eu.arrowhead.tool.examination.config.ExaminationHttpService;
 import eu.arrowhead.tool.examination.config.HttpActor;
 import eu.arrowhead.tool.examination.config.Reporter;
+import eu.arrowhead.tool.examination.config.ReporterType;
 import eu.arrowhead.tool.examination.controller.dto.SystemListResponseDTO;
 import eu.arrowhead.tool.examination.use_case.ApplicationSystemUseCase;
 import eu.arrowhead.tool.examination.use_case.SystemOperatorUseCase;
@@ -56,7 +57,8 @@ public class ExaminationMain implements ApplicationRunner {
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	public void run(final ApplicationArguments args) throws Exception {
-		new Reporter();
+		new Reporter(ReporterType.LATENCY);
+		new Reporter(ReporterType.ASSERT);
 		checkCoreSystems();
 		runUseCases();
 	}
@@ -99,10 +101,10 @@ public class ExaminationMain implements ApplicationRunner {
 	}
 	
 	private void runUseCases() {
-		for (SystemOperatorUseCase uc : UseCasesToRun.getSystemOperator()) {
+		for (final SystemOperatorUseCase uc : UseCasesToRun.getSystemOperator()) {
 			uc.start();
 		}
-		for (ApplicationSystemUseCase uc : UseCasesToRun.getApplicationSystem()) {
+		for (final ApplicationSystemUseCase uc : UseCasesToRun.getApplicationSystem()) {
 			uc.start();
 		}
 	}

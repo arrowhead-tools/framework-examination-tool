@@ -319,7 +319,7 @@ public class ExaminationHttpService {
 		final String endpoint = method + " " + uri.toUriString();
 		reportSet.add(new String[] { useCase, String.valueOf(sentNanoSecond / nanoSecondToMilliSecond), endpoint, String.valueOf((receivedNanoSecond - sentNanoSecond) / nanoSecondToMilliSecond) });
 		try {
-			Reporter.report(reportSet);
+			Reporter.report(reportSet, ReporterType.LATENCY);
 		} catch (IOException | URISyntaxException ex) {
 			logger.error("Latency report file writing error occured");
 		}

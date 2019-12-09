@@ -48,7 +48,7 @@ public class ApplicationSystemUseCase extends ExaminationAssert implements UseCa
 			logger.error("APP use case failed: " + this.getClass().getSimpleName());
 			logger.error(ex.getMessage());
 			final List<String[]> reportSet = new ArrayList<>();
-			reportSet.add(new String[] { this.getClass().getSimpleName(), "no error", "error", "", ex.getMessage() });
+			reportSet.add(new String[] { this.getClass().getSimpleName(), "no error", "error", STATUS_NOT_OK, ex.getMessage() });
 			try {
 				Reporter.report(reportSet, ReporterType.ASSERT);
 			} catch (IOException | URISyntaxException e) {

@@ -22,4 +22,9 @@ public class CoreSystems {
 	public static UriComponents getServiceRegistryUri(final String path) {
 		return Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort, path);
 	}
+	
+	//-------------------------------------------------------------------------------------------------
+	public static UriComponents getServiceRegistryUri(final String path, final String... queryParams) {
+		return Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort, path, queryParams);
+	}
 }

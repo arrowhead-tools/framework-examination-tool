@@ -17,8 +17,8 @@ public class ExaminationAssert {
 	//=================================================================================================
 	// members
 	
-	private static final String STATUS_OK = "OK";
-	private static final String STATUS_NOT_OK = "NOT_OK";
+	protected static final String STATUS_OK = "OK";
+	protected static final String STATUS_NOT_OK = "NOT_OK";
 	
 	private final Logger logger = LogManager.getLogger(this.getClass());
 	
@@ -27,7 +27,7 @@ public class ExaminationAssert {
 	
 	//-------------------------------------------------------------------------------------------------
 	public void assertNotNull(final Object object, final String remark) {
-		Assert.notNull(remark, "assert message cannot be null");
+		Assert.notNull(remark, "assert remark cannot be null");
 		final List<String[]> reportSet = new ArrayList<>();
 		try {
 			Assert.notNull(object, "");
@@ -35,17 +35,13 @@ public class ExaminationAssert {
 		} catch (final IllegalArgumentException ex) {
 			reportSet.add(new String[] { this.getClass().getSimpleName(), "not null", "null", STATUS_NOT_OK, remark });
 		} finally {
-			try {
-				Reporter.report(reportSet, ReporterType.ASSERT);
-			} catch (IOException | URISyntaxException e) {
-				logger.error("CSV reporting error occured");
-			}
+			report(reportSet);
 		}
 	}
 	
 	//-------------------------------------------------------------------------------------------------
 	public void assertEqualsIgnoreCaseWithTrim(final String expected, final String actual, final String remark) {
-		Assert.notNull(remark, "assert message cannot be null");
+		Assert.notNull(remark, "assert remark cannot be null");
 		
 		final List<String[]> reportSet = new ArrayList<>();
 		if (expected == null && actual != null) {
@@ -56,11 +52,7 @@ public class ExaminationAssert {
 			reportSet.add(new String[] { this.getClass().getSimpleName(), "expected and actual strings are not null", "both string is null", STATUS_NOT_OK, remark });
 		}
 		if (!reportSet.isEmpty()) {
-			try {
-				Reporter.report(reportSet, ReporterType.ASSERT);
-			} catch (IOException | URISyntaxException e) {
-				logger.error("CSV reporting error occured");
-			}
+			report(reportSet);
 			return;
 		}
 		
@@ -69,11 +61,35 @@ public class ExaminationAssert {
 		} else {
 			reportSet.add(new String[] { this.getClass().getSimpleName(), "equals", "not equals", STATUS_NOT_OK, remark });
 		}
+		report(reportSet);
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	public void assertExpectException(final Class<?> expected, final Exception actual, final String remark) {
+		Assert.notNull(expected, "assert expected exception cannot be null");
+		Assert.notNull(actual, "assert actual exception cannot be null");
+		Assert.notNull(remark, "assert remark cannot be null");
+		
+		final List<String[]> reportSet = new ArrayList<>();
+		if (expected.getTypeName().equalsIgnoreCase(actual.getClass().getTypeName())) {
+			reportSet.add(new String[] { this.getClass().getSimpleName(), expected.getTypeName(), actual.getClass().getTypeName(), STATUS_OK, remark });
+		} else {
+			reportSet.add(new String[] { this.getClass().getSimpleName(), expected.getTypeName(), actual.getClass().getTypeName(), STATUS_NOT_OK, remark });
+		}
+		report(reportSet);
+	}
+	
+	//=================================================================================================
+	// assistant methods
+	
+	//-------------------------------------------------------------------------------------------------
+	private void report(final List<String[]> reportSet) {
+		Assert.notNull(reportSet, "reportSet cannot be null");
 		try {
 			Reporter.report(reportSet, ReporterType.ASSERT);
 		} catch (IOException | URISyntaxException e) {
 			logger.error("CSV reporting error occured");
 		}
-	}
+	}	
 	
 }

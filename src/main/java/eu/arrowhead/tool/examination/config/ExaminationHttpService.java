@@ -53,8 +53,6 @@ import eu.arrowhead.common.SSLProperties;
 import eu.arrowhead.common.Utilities;
 import eu.arrowhead.common.exception.AuthException;
 import eu.arrowhead.common.exception.UnavailableServerException;
-import eu.arrowhead.common.http.ArrowheadHttpClientResponseErrorHandler;
-import eu.arrowhead.common.http.HttpService;
 
 @Component
 public class ExaminationHttpService {
@@ -67,7 +65,7 @@ public class ExaminationHttpService {
 	
 	private static final List<HttpMethod> NOT_SUPPORTED_METHODS = List.of(HttpMethod.HEAD, HttpMethod.OPTIONS, HttpMethod.TRACE); 
  
-	private final Logger logger = LogManager.getLogger(HttpService.class);
+	private final Logger logger = LogManager.getLogger(ExaminationHttpService.class);
 	
 	@Value(CommonConstants.$DISABLE_HOSTNAME_VERIFIER_WD)
 	private boolean disableHostnameVerifier;
@@ -90,7 +88,7 @@ public class ExaminationHttpService {
 	private String clientName;
 
 	@Autowired
-	private ArrowheadHttpClientResponseErrorHandler errorHandler;
+	private ExaminationArrowheadHttpClientResponseErrorHandler errorHandler;
 	
 	private RestTemplate template;
 	private RestTemplate sslTemplate;
@@ -176,7 +174,7 @@ public class ExaminationHttpService {
 				logger.error("The certificate of the system at {} does not contain the specified IP address or DNS name as a Subject Alternative Name.", uri.toString());
 				throw new AuthException("The certificate of the system at " + uri.toString() + " does not contain the specified IP address or DNS name as a Subject Alternative Name."); 
 			} else {
-		        logger.error("UnavailableServerException occurred at {}", uri.toUriString());
+		        logger.debug("UnavailableServerException occurred at {}", uri.toUriString());
 		        logger.debug("Exception", ex);
 		        throw new UnavailableServerException("Could not get any response from: " + uri.toUriString(), HttpStatus.SC_SERVICE_UNAVAILABLE, ex);
 			}

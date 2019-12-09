@@ -18,7 +18,7 @@ public class Reporter {
 	// members
 	
 	private static final String DATA_SET_HEADER_LATENCY = "use_case, request_sent_ms, endpoint, latency_ms\n";
-	private static final String DATA_SET_HEADER_ASSERT = "use_case, expected, result, status, error_message\n";
+	private static final String DATA_SET_HEADER_ASSERT = "use_case, expected, result, status, remark\n";
 	
 	private static File latencyFile;
 	private static File assertFile;

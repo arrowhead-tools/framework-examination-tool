@@ -4,6 +4,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import eu.arrowhead.common.dto.shared.ServiceDefinitionResponseDTO;
 import eu.arrowhead.common.dto.shared.ServiceRegistryRequestDTO;
 import eu.arrowhead.common.dto.shared.ServiceRegistryResponseDTO;
 import eu.arrowhead.common.dto.shared.SystemRequestDTO;
@@ -16,7 +17,7 @@ import eu.arrowhead.tool.examination.util.ExminationUtil;
 import eu.arrowhead.tool.examination.util.MgmtUri;
 
 @Component
-public class RegisterProviderWithServiceThenDeleteSystem extends SystemOperatorUseCase {
+public class RegisterProviderWithServiceThenDeleteSystemAndServiceDefinition extends SystemOperatorUseCase {
 	
 	//=================================================================================================
 	// members
@@ -55,16 +56,24 @@ public class RegisterProviderWithServiceThenDeleteSystem extends SystemOperatorU
 		assertEqualsIgnoreCaseWithTrim(serviceRegistryRequestDTO.getSecure().name(), srEntry.getBody().getSecure().name(), "Security level in serviceRegistryRequestDTO and in response must be the same");
 		
 		request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_SYSTEMS + "/" + String.valueOf(provider.getBody().getId())), HttpMethod.DELETE, Void.class);
+		request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_SERVICES + "/" + String.valueOf(srEntry.getBody().getServiceDefinition().getId())), HttpMethod.DELETE, Void.class);
+		
 		try {			
 			final ResponseEntity<SystemResponseDTO> systemResponse = request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_SYSTEMS + "/" + String.valueOf(provider.getBody().getId())), HttpMethod.GET, SystemResponseDTO.class);
 		} catch (final Exception ex) {
-			assertExpectException(InvalidParameterException.class, ex, "No id should exists after delete");
+			assertExpectException(InvalidParameterException.class, ex, "No system id should exists after delete the provider");
 		}
 		
 		try {			
 			final ResponseEntity<ServiceRegistryResponseDTO> serviceRegistryResponse = request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY + "/" + String.valueOf(srEntry.getBody().getId())), HttpMethod.GET, ServiceRegistryResponseDTO.class);
 		} catch (final Exception ex) {
 			assertExpectException(InvalidParameterException.class, ex, "No srEntry id shloud exists after delete the provider system");
+		}
+		
+		try {			
+			final ResponseEntity<ServiceDefinitionResponseDTO> serviceDefResponse = request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_SERVICES + "/" + String.valueOf(srEntry.getBody().getServiceDefinition().getId())), HttpMethod.GET, ServiceDefinitionResponseDTO.class);
+		} catch (final Exception ex) {
+			assertExpectException(InvalidParameterException.class, ex, "No service definition id should exists after delete the service definition");
 		}
 	}
 }

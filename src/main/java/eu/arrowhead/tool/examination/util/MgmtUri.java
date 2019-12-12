@@ -7,6 +7,7 @@ public class MgmtUri {
 
 	public static final String SERVICE_REGISTRY = "/serviceregistry/mgmt";
 	public static final String SERVICE_REGISTRY_SYSTEMS = "/serviceregistry/mgmt/systems";
+	public static final String SERVICE_REGISTRY_SERVICES = "/serviceregistry/mgmt/services";
 	
 	
 	//=================================================================================================

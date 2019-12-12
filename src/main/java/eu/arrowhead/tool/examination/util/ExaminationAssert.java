@@ -57,9 +57,9 @@ public class ExaminationAssert {
 		}
 		
 		if (expected.trim().equalsIgnoreCase(actual.trim())) {
-			reportSet.add(new String[] { this.getClass().getSimpleName(), "equals", "equals", STATUS_OK, remark });
+			reportSet.add(new String[] { this.getClass().getSimpleName(), expected, actual, STATUS_OK, remark });
 		} else {
-			reportSet.add(new String[] { this.getClass().getSimpleName(), "equals", "not equals", STATUS_NOT_OK, remark });
+			reportSet.add(new String[] { this.getClass().getSimpleName(), expected, actual, STATUS_NOT_OK, remark });
 		}
 		report(reportSet);
 	}

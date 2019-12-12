@@ -15,6 +15,21 @@ public class CoreSystems {
 	public static String serviceRegistryAddress;
 	public static int serviceRegistryPort;
 	
+	public static String authorizationAddress;
+	public static int authorizationPort;
+	
+	public static String orchestratorAddress;
+	public static int orchestratorPort;
+	
+	public static String gatekeeperAddress;
+	public static int gatekeeperPort;
+	
+	public static String gatewayAddress;
+	public static int gatewayPort;
+	
+	public static String eventhandlerAddress;
+	public static int eventhandlerPort;
+	
 	//=================================================================================================
 	// methods
 	
@@ -26,5 +41,15 @@ public class CoreSystems {
 	//-------------------------------------------------------------------------------------------------
 	public static UriComponents getServiceRegistryUri(final String path, final String... queryParams) {
 		return Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort, path, queryParams);
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	public static UriComponents getAuthorizationUri(final String path) {
+		return Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), authorizationAddress, authorizationPort, path);
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	public static UriComponents getOrchestratorUri(final String path) {
+		return Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), orchestratorAddress, orchestratorPort, path);
 	}
 }

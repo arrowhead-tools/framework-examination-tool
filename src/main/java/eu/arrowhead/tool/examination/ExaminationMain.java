@@ -74,7 +74,7 @@ public class ExaminationMain implements ApplicationRunner {
 			logger.info(CoreSystem.SERVICE_REGISTRY.name() + " Core System is reachable on: " + serviceRegistryAddress + ":" + serviceRegistryPort);
 			CoreSystems.serviceRegistryAddress = serviceRegistryAddress;
 			CoreSystems.serviceRegistryPort = serviceRegistryPort;
-			systemListDTO = httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort, MgmtUri.SERVICE_REGISTRY_SYSTEMS),
+			systemListDTO = httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort, MgmtUri.SERVICE_REGISTRY_MGMT_SYSTEMS),
 													HttpMethod.GET, SystemListResponseDTO.class, "CheckCoreSystems");
 		} catch (final Exception ex) {
 			logger.info(CoreSystem.SERVICE_REGISTRY.name() + " Core System is not reachable on: " + serviceRegistryAddress + ":" + serviceRegistryPort);
@@ -82,10 +82,11 @@ public class ExaminationMain implements ApplicationRunner {
 		}
 		
 		for (final SystemResponseDTO system : systemListDTO.getBody().getData()) {
-			for (final CoreSystem	coreSystem : CoreSystem.values()) {
+			for (final CoreSystem coreSystem : CoreSystem.values()) {
 				if (system.getSystemName().equalsIgnoreCase(coreSystem.name()) && !system.getSystemName().equalsIgnoreCase(CoreSystem.SERVICE_REGISTRY.name())) {
 					final String address = system.getAddress();
 					final int port = system.getPort();
+					storeCoreSystemAddress(coreSystem, address, port);
 					logger.info(coreSystem.name() + " is registered");
 					try {
 						httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), address, port,
@@ -100,12 +101,45 @@ public class ExaminationMain implements ApplicationRunner {
 		}
 	}
 	
+	//-------------------------------------------------------------------------------------------------
 	private void runUseCases() {
 		for (final SystemOperatorUseCase uc : UseCasesToRun.getSystemOperator()) {
 			uc.start();
 		}
 		for (final ApplicationSystemUseCase uc : UseCasesToRun.getApplicationSystem()) {
 			uc.start();
+		}
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	private void storeCoreSystemAddress(final CoreSystem coreSystem, final String address, final int port) {
+		switch (coreSystem) {
+		case SERVICE_REGISTRY:
+			CoreSystems.serviceRegistryAddress = address;
+			CoreSystems.serviceRegistryPort = port;
+			break;
+		case AUTHORIZATION:
+			CoreSystems.authorizationAddress = address;
+			CoreSystems.authorizationPort = port;
+			break;
+		case ORCHESTRATOR:
+			CoreSystems.orchestratorAddress = address;
+			CoreSystems.orchestratorPort = port;
+			break;
+		case GATEKEEPER:
+			CoreSystems.gatekeeperAddress = address;
+			CoreSystems.gatekeeperPort = port;
+			break;
+		case GATEWAY:
+			CoreSystems.gatewayAddress = address;
+			CoreSystems.gatewayPort = port;
+			break;
+		case EVENT_HANDLER:
+			CoreSystems.eventhandlerAddress = address;
+			CoreSystems.eventhandlerPort = port;
+			break;
+		default:
+			throw new IllegalArgumentException("Core system not known: " + coreSystem.name());
 		}
 	}
 }

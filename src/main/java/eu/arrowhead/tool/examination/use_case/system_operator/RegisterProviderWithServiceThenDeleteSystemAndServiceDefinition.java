@@ -32,14 +32,14 @@ public class RegisterProviderWithServiceThenDeleteSystemAndServiceDefinition ext
 		final SystemRequestDTO providerRequest = ExminationUtil.generateSystemRequestDTO();
 		final ServiceRegistryRequestDTO serviceRegistryRequest = ExminationUtil.generateServiceRegistryRequestDTO(providerRequest);
 		
-		final ResponseEntity<SystemResponseDTO> providerResponse = request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_SYSTEMS), HttpMethod.POST, SystemResponseDTO.class, providerRequest);
-		final ResponseEntity<ServiceRegistryResponseDTO> serviceRegistryResponse = request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY), HttpMethod.POST, ServiceRegistryResponseDTO.class, serviceRegistryRequest);
+		final ResponseEntity<SystemResponseDTO> providerResponse = request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_MGMT_SYSTEMS), HttpMethod.POST, SystemResponseDTO.class, providerRequest);
+		final ResponseEntity<ServiceRegistryResponseDTO> serviceRegistryResponse = request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_MGMT), HttpMethod.POST, ServiceRegistryResponseDTO.class, serviceRegistryRequest);
 		
 		verifySystemResponse(providerRequest, providerResponse.getBody());
 		verifyServiceRegistryResponse(serviceRegistryRequest, serviceRegistryResponse.getBody());		
 		
-		request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_SYSTEMS + "/" + String.valueOf(providerResponse.getBody().getId())), HttpMethod.DELETE, Void.class);
-		request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_SERVICES + "/" + String.valueOf(serviceRegistryResponse.getBody().getServiceDefinition().getId())), HttpMethod.DELETE, Void.class);
+		request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_MGMT_SYSTEMS + "/" + String.valueOf(providerResponse.getBody().getId())), HttpMethod.DELETE, Void.class);
+		request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_MGMT_SERVICES + "/" + String.valueOf(serviceRegistryResponse.getBody().getServiceDefinition().getId())), HttpMethod.DELETE, Void.class);
 
 		verifyDeleteRequests(providerResponse.getBody(), serviceRegistryResponse.getBody());
 	}
@@ -94,19 +94,19 @@ public class RegisterProviderWithServiceThenDeleteSystemAndServiceDefinition ext
 	//-------------------------------------------------------------------------------------------------
 	private void verifyDeleteRequests(final SystemResponseDTO systemResponse, final ServiceRegistryResponseDTO serviceRegistryResponse) {
 		try {			
-			request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_SYSTEMS + "/" + String.valueOf(systemResponse.getId())), HttpMethod.GET, SystemResponseDTO.class);
+			request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_MGMT_SYSTEMS + "/" + String.valueOf(systemResponse.getId())), HttpMethod.GET, SystemResponseDTO.class);
 		} catch (final Exception ex) {
 			assertExpectException(InvalidParameterException.class, ex, "No system id should exists after delete the provider");
 		}
 		
 		try {			
-			request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY + "/" + String.valueOf(serviceRegistryResponse.getId())), HttpMethod.GET, ServiceRegistryResponseDTO.class);
+			request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_MGMT + "/" + String.valueOf(serviceRegistryResponse.getId())), HttpMethod.GET, ServiceRegistryResponseDTO.class);
 		} catch (final Exception ex) {
 			assertExpectException(InvalidParameterException.class, ex, "No srEntry id shloud exists after delete the provider system");
 		}
 		
 		try {			
-			request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_SERVICES + "/" + String.valueOf(serviceRegistryResponse.getServiceDefinition().getId())), HttpMethod.GET, ServiceDefinitionResponseDTO.class);
+			request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_MGMT_SERVICES + "/" + String.valueOf(serviceRegistryResponse.getServiceDefinition().getId())), HttpMethod.GET, ServiceDefinitionResponseDTO.class);
 		} catch (final Exception ex) {
 			assertExpectException(InvalidParameterException.class, ex, "No service definition id should exists after delete the service definition");
 		}

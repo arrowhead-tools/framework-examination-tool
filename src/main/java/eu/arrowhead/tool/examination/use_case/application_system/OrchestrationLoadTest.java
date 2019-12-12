@@ -2,7 +2,9 @@ package eu.arrowhead.tool.examination.use_case.application_system;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -68,15 +70,24 @@ public class OrchestrationLoadTest extends ApplicationSystemUseCase {
 		//Create authorization rules
 		final AuthorizationIntraCloudRequestDTO authRequest = new AuthorizationIntraCloudRequestDTO(consumerResponse.getBody().getId(), registeredProviderIDs, List.of(serviceDefinitionID), List.of(interfaceID));
 		request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getAuthorizationUri(MgmtUri.AUTHORIZATION_MGMT_INTRACLOUD), HttpMethod.POST, AuthorizationIntraCloudCheckResponseDTO.class, authRequest);
+
 		
 		//Run load test
+		final BlockingQueue<Integer> queue = new LinkedBlockingQueue<>(numberOfOrchestrationRequestToBeSent);
 		final ServiceQueryFormDTO serviceQueryFormDTO = new ServiceQueryFormDTO.Builder(serviceRegistryRequest.getServiceDefinition()).interfaces(serviceRegistryRequest.getInterfaces().get(0)).build();
 		final OrchestrationFormRequestDTO orchestrationFormRequestDTO = new OrchestrationFormRequestDTO.Builder(consumerRequest).requestedService(serviceQueryFormDTO).build();
 		for (int i = 0; i < numberOfOrchestrationRequestToBeSent; i++) {
-			threadPool.execute(new AsyncRequest(orchestrationFormRequestDTO));
+			threadPool.execute(new AsyncRequest(orchestrationFormRequestDTO, queue));
 		}
 		
-		//TODO wait for all the orchestration done
+		//Wait for all orchestration being done
+		for (int i = 0; i < numberOfOrchestrationRequestToBeSent; i++) {
+			try {
+				queue.take();
+			} catch (InterruptedException e) {
+				//TODO
+			}
+		}
 		
 		//Delete consumer
 		request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_MGMT_SYSTEMS + "/" + String.valueOf(consumerResponse.getBody().getId())), HttpMethod.DELETE, Void.class);
@@ -100,9 +111,11 @@ public class OrchestrationLoadTest extends ApplicationSystemUseCase {
 		// members
 		
 		private final OrchestrationFormRequestDTO orchestrationRequest;
+		private final BlockingQueue<Integer> queue;
 		
-		private AsyncRequest(final OrchestrationFormRequestDTO orchestrationRequest) {
+		private AsyncRequest(final OrchestrationFormRequestDTO orchestrationRequest, final BlockingQueue<Integer> queue) {
 			this.orchestrationRequest = orchestrationRequest;
+			this.queue = queue;
 		}
 		
 		//=================================================================================================
@@ -111,7 +124,8 @@ public class OrchestrationLoadTest extends ApplicationSystemUseCase {
 		//-------------------------------------------------------------------------------------------------
 		@Override
 		public void run() {
-			request(HttpActor.APPLICATION_SYSTEM, CoreSystems.getOrchestratorUri(MgmtUri.ORCHESTRATOR_ORCHESTRATION), HttpMethod.POST, OrchestrationResponseDTO.class, orchestrationRequest);			
+			request(HttpActor.APPLICATION_SYSTEM, CoreSystems.getOrchestratorUri(MgmtUri.ORCHESTRATOR_ORCHESTRATION), HttpMethod.POST, OrchestrationResponseDTO.class, orchestrationRequest);
+			queue.add(1);
 		}		
 	}
 

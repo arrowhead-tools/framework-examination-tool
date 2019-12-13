@@ -1,9 +1,11 @@
 $(function () {
     $("#upload").bind("click", function () {
       readFullCSV();
-
     });
 });
+
+
+//------------------------------------------------------------------------------
 
 function readFullCSV() {
   var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
@@ -14,18 +16,16 @@ function readFullCSV() {
               var table = $("<table id='full-assert-csv' />");
               var rows = e.target.result.split("\n");
               for (var i = 0; i < rows.length; i++) {
-                  if (i > 0) {
-                    var row = $("<tr />");
-                    var cells = rows[i].split(",");
-                    if (cells.length > 1) {
-                        for (var j = 0; j < cells.length; j++) {
-                            var cell = $("<td />");
-                            cell.html(cells[j]);
-                            row.append(cell);
-                        }
-                        table.append(row);
+                var row = $("<tr />");
+                var cells = rows[i].split(",");
+                if (cells.length > 1) {
+                    for (var j = 0; j < cells.length; j++) {
+                        var cell = $("<td />");
+                        cell.html(cells[j]);
+                        row.append(cell);
                     }
-                  }
+                    table.append(row);
+                }
               }
               $("#assert-csv").html('');
               $("#assert-csv").append(table);
@@ -55,14 +55,14 @@ function showUseCaseResults() {
         status = cell.textContent;
       }
     });
-    if (!(usecase in assertSumMap)) {
+    if (usecase != 'use_case' && usecase != "'use_case'" && !(usecase in assertSumMap)) {
       assertSumMap[usecase] = {ok: 0, notOk: 0};
     }
 
     if (status == 'OK' || status =='"OK"') {
       var sumOK = assertSumMap[usecase].ok + 1;
       assertSumMap[usecase].ok = sumOK;
-    } else {
+    } else if (status == 'NOT_OK' || status =='"NOT_OK"') {
       var sumNotOK = assertSumMap[usecase].notOk + 1;
       assertSumMap[usecase].notOk = sumNotOK;
     }
@@ -81,8 +81,41 @@ function showUseCaseResults() {
     row.append(useCaseCell);
     row.append(okCell);
     row.append(notOkCell);
+    row.append($("<input type='button' id='show-errors' value='ERRORS' data-usecase='" + x + "' />"))
     table.append(row);
   }
   $("#assert-sum-table").html('');
   $("#assert-sum-table").append(table);
+  showErrors();
+}
+
+function showErrors() {
+  $('#show-errors').unbind().click(function() {
+    var usecase = this.getAttribute("data-usecase");
+    console.log(usecase);
+    var table = $("<table id='errors-assert-csv' />");
+    $.each($('#full-assert-csv tr'), function() {
+      var rowUseCase;
+      var status;
+      var row = $(this);
+      $.each(this.cells, function(cellIndex, cell) {
+        if (cellIndex == 0) {
+          rowUseCase = cell.textContent;
+          console.log(rowUseCase);
+        }
+        if (cellIndex == 3) {
+          status = cell.textContent;
+          console.log(status);
+        }
+      });
+      if (rowUseCase == usecase || rowUseCase == 'use_case' || rowUseCase == "'use_case'") {
+        if (status == 'NOT_OK' || status =='"NOT_OK"' || status == 'status' || status =='"status"') {
+          table.append(row);
+        }
+      }
+
+    });
+    $("#assert-error-table").html('');
+    $("#assert-error-table").append(table);
+  });
 }

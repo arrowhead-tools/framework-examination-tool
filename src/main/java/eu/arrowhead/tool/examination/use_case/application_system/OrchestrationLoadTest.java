@@ -1,5 +1,7 @@
 package eu.arrowhead.tool.examination.use_case.application_system;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
@@ -7,6 +9,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +25,8 @@ import eu.arrowhead.common.dto.shared.SystemRequestDTO;
 import eu.arrowhead.common.dto.shared.SystemResponseDTO;
 import eu.arrowhead.tool.examination.config.CoreSystems;
 import eu.arrowhead.tool.examination.config.HttpActor;
+import eu.arrowhead.tool.examination.config.Reporter;
+import eu.arrowhead.tool.examination.config.ReporterType;
 import eu.arrowhead.tool.examination.controller.dto.AuthorizationIntraCloudCheckResponseDTO;
 import eu.arrowhead.tool.examination.controller.dto.AuthorizationIntraCloudRequestDTO;
 import eu.arrowhead.tool.examination.use_case.ApplicationSystemUseCase;
@@ -113,19 +119,33 @@ public class OrchestrationLoadTest extends ApplicationSystemUseCase {
 		private final OrchestrationFormRequestDTO orchestrationRequest;
 		private final BlockingQueue<Integer> queue;
 		
+		private final Logger logger = LogManager.getLogger(OrchestrationLoadTest.class);		
+		
+		//=================================================================================================
+		// methods
+		
+		//-------------------------------------------------------------------------------------------------
 		private AsyncRequest(final OrchestrationFormRequestDTO orchestrationRequest, final BlockingQueue<Integer> queue) {
 			this.orchestrationRequest = orchestrationRequest;
 			this.queue = queue;
 		}
-		
-		//=================================================================================================
-		// methods
 	
 		//-------------------------------------------------------------------------------------------------
 		@Override
 		public void run() {
-			request(HttpActor.APPLICATION_SYSTEM, CoreSystems.getOrchestratorUri(MgmtUri.ORCHESTRATOR_ORCHESTRATION), HttpMethod.POST, OrchestrationResponseDTO.class, orchestrationRequest);
-			queue.add(1);
+			try {
+				request(HttpActor.APPLICATION_SYSTEM, CoreSystems.getOrchestratorUri(MgmtUri.ORCHESTRATOR_ORCHESTRATION), HttpMethod.POST, OrchestrationResponseDTO.class, orchestrationRequest);				
+			} catch (final Exception ex) {
+				final List<String[]> reportSet = new ArrayList<>();
+				reportSet.add(new String[] { this.getClass().getSimpleName(), "no error", "error", STATUS_NOT_OK, ex.getMessage() });
+				try {
+					Reporter.report(reportSet, ReporterType.ASSERT);
+				} catch (IOException | URISyntaxException e) {
+					logger.error("CSV reporting error occured");
+				}
+			} finally {				
+				queue.add(1);
+			}
 		}		
 	}
 

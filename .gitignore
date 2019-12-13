@@ -24,7 +24,6 @@
 .vscode/
 wrapper
 */target
-/report/
 /mvnw
 /mvnw.cmd
 /.settings
@@ -32,5 +31,6 @@ wrapper
 /.metadata/
 
 *.log
+*.csv
 
 

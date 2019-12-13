@@ -68,13 +68,13 @@ function showUseCaseResults() {
     }
   });
   var table = $("<table id='sum-assert-csv' />");
-  var row = $("<tr />");
+  var row = $("<tr class='table-header'/>");
   row.append($("<td />").html("USE CASE"));
   row.append($("<td />").html("OK"));
   row.append($("<td />").html("NOT OK"));
   table.append(row);
   for (var x in assertSumMap) {
-    var row = $("<tr />");
+    var row = $("<tr class='table-row'/>");
     var useCaseCell = $("<td />").html(x);
     var okCell = $("<td />").html(assertSumMap[x].ok);
     var notOkCell = $("<td />").html(assertSumMap[x].notOk);

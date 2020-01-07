@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import com.opencsv.CSVWriter;
 
+import eu.arrowhead.common.exception.ArrowheadException;
 import eu.arrowhead.common.exception.InvalidParameterException;
 
 public class Reporter {
@@ -62,7 +64,7 @@ public class Reporter {
 	
 	//-------------------------------------------------------------------------------------------------
 	private File createCSV(final ReporterType type, final String header) throws IOException {
-		final String filePath = getFilePath(type);
+		final String filePath = getPathAndFileName(type);
 		final File file = new File(filePath);
 		file.getParentFile().mkdirs();
 		if (file.createNewFile()) {
@@ -75,10 +77,19 @@ public class Reporter {
 	}
 	
 	//-------------------------------------------------------------------------------------------------
-	private static String getFilePath(final ReporterType type) {
+	private static String getPathAndFileName(final ReporterType type) {
+		String currentDir = System.getProperty("user.dir");
+		while (!currentDir.endsWith("framework-examination-tool")) {
+			try {				
+				currentDir = Paths.get(currentDir).getParent().toAbsolutePath().toString();
+			} catch (final Exception ex) {
+				throw new ArrowheadException("Creating path for report files failed: No 'framework-examination-tool' directory found");
+			}
+		}
+		
 		String fileName = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS) + "_report_" + type.name().toLowerCase() + ".csv";
 		fileName = fileName.replace("-", "");
 		fileName = fileName.replace(":", "");
-		return "report/" + fileName;
+		return currentDir + File.separator + "report" + File.separator + fileName;
 	}
 }

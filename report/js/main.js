@@ -97,15 +97,13 @@ function showErrors() {
     $.each($('#full-assert-csv tr'), function() {
       var rowUseCase;
       var status;
-      var row = $(this);
+      var row = $(this).clone();
       $.each(this.cells, function(cellIndex, cell) {
         if (cellIndex == 0) {
           rowUseCase = cell.textContent;
-          console.log(rowUseCase);
         }
         if (cellIndex == 3) {
           status = cell.textContent;
-          console.log(status);
         }
       });
       if (rowUseCase == usecase || rowUseCase == 'use_case' || rowUseCase == "'use_case'") {

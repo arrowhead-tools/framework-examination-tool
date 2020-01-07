@@ -4,7 +4,6 @@ $(function () {
     });
 });
 
-
 //------------------------------------------------------------------------------
 
 function readFullCSV() {
@@ -81,7 +80,7 @@ function showUseCaseResults() {
     row.append(useCaseCell);
     row.append(okCell);
     row.append(notOkCell);
-    row.append($("<input type='button' id='show-errors' value='ERRORS' data-usecase='" + x + "' />"))
+    row.append($("<input type='button' class='show-errors' value='ERRORS' data-usecase='" + x + "' />"));
     table.append(row);
   }
   $("#assert-sum-table").html('');
@@ -90,7 +89,7 @@ function showUseCaseResults() {
 }
 
 function showErrors() {
-  $('#show-errors').unbind().click(function() {
+  $('.show-errors').unbind().click(function() {
     var usecase = this.getAttribute("data-usecase");
     console.log(usecase);
     var table = $("<table id='errors-assert-csv' />");

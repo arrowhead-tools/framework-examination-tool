@@ -61,6 +61,7 @@ public class ExaminationMain implements ApplicationRunner {
 		new Reporter(ReporterType.ASSERT);
 		checkCoreSystems();
 		runUseCases();
+		System.exit(0);
 	}
 	
 	//=================================================================================================

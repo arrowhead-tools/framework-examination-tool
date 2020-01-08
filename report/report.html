@@ -7,16 +7,20 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/assert-report.js"></script>
+    <script src="js/latency-report.js"></script>
   </head>
   <body>
     <div id="hero">
+      <input type="file" id="fileUpload" style="width: 400px" />
+      <input type="button" id="upload" value="Upload" />
+      <hr />
       <div id="assert-container">
-        <input type="file" id="fileUpload" style="width: 400px" />
-        <input type="button" id="upload" value="Upload" />
-        <hr />
         <div id="assert-sum-table"> </div>
         <div id="assert-error-table"> </div>
         <div id="assert-csv" style="display:none"></div>
+      </div>
+      <div id="latency-container">
+        <div id="latency-csv" ></div>
       </div>
     </div>
   </body>

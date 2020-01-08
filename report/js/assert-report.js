@@ -48,7 +48,6 @@ function showUseCaseResults() {
 function showErrors() {
   $('.show-errors').unbind().click(function() {
     var usecase = this.getAttribute("data-usecase");
-    console.log(usecase);
     var table = $("<table id='errors-assert-csv' />");
     $.each($('#full-assert-csv tr'), function() {
       var rowUseCase;

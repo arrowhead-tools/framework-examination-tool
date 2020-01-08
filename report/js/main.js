@@ -61,6 +61,9 @@ function readFullCSVAssert() {
 }
 
 function readFullCSVLatency() {
+  var usecaseSet = new Set();
+  var endpointSet = new Set();
+
   var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
   if (regex.test($("#fileUpload").val().toLowerCase())) {
       if (typeof (FileReader) != "undefined") {
@@ -76,6 +79,14 @@ function readFullCSVLatency() {
                         var cell = $("<td />");
                         cell.html(cells[j]);
                         row.append(cell);
+                        if (j == 0 && cells[j] != 'use_case' && !usecaseSet.has(cells[j])) {
+                          $('#usecase-list').append("<option value='" + cells[j] + "'>");
+                          usecaseSet.add(cells[j]);
+                        }
+                        if (j == 2 && cells[j] != 'endpoint' && !endpointSet.has(cells[j])) {
+                          $('#endpoint-list').append("<option value='" + cells[j] + "'>");
+                          endpointSet.add(cells[j]);
+                        }
                     }
                     table.append(row);
                 }

@@ -29,6 +29,12 @@ td {
 #latency-filters {
   width: 1000px;
   margin: auto;
+  padding-top: 20px;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-around;
+}
+
+#latency-filter-refresh {
+  margin-top: 20px;
 }

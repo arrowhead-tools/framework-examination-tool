@@ -43,6 +43,7 @@ function showUseCaseResults() {
   $("#assert-sum-table").html('');
   $("#assert-sum-table").append(table);
   showErrors();
+  $("#loading-div").hide();
 }
 
 function showErrors() {

@@ -6,6 +6,7 @@ $(document).ready(function() {
 
 function readFullCSV() {
   $("#upload").bind("click", function () {
+    $("#loading-div").show();
     $("#assert-sum-table").html('');
     $("#assert-error-table").html('');
     $("#assert-csv").html('');

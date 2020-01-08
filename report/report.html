@@ -18,11 +18,19 @@
       <div id="assert-container">
         <div id="assert-sum-table"> </div>
         <div id="assert-error-table"> </div>
-        <div id="assert-csv" style="display:none"></div>
+        <div id="assert-csv" style="display:none"> </div>
       </div>
       <div id="latency-container">
-        <div id="latency-chart"></div>
-        <div id="latency-csv" ></div>
+        <div id="latency-filters" style="display:none">
+          <datalist id="usecase-list"></datalist>
+          <label for="usecase-filter">USE CASE:</label>
+          <input id="usecase-filter" type="text" list="usecase-list" size="50">
+          <datalist id="endpoint-list"></datalist>
+          <label for="endpoint-filter">ENDPOINT:</label>
+          <input id="endpoint-filter" type="text" list="endpoint-list" size="50">
+        </div>
+        <div id="latency-chart"> </div>
+        <div id="latency-csv" style="display:none"> </div>
       </div>
     </div>
   </body>

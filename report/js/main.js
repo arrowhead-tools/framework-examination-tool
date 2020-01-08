@@ -9,12 +9,15 @@ function readFullCSV() {
     $("#assert-sum-table").html('');
     $("#assert-error-table").html('');
     $("#assert-csv").html('');
+    $("#latency-filters").hide();
+    $("#latency-chart").html('');
     $("#latency-csv").html('');
 
     if ($("#fileUpload").val().toLowerCase().includes("assert")) {
       readFullCSVAssert();
     } else if ($("#fileUpload").val().toLowerCase().includes("latency")) {
       readFullCSVLatency();
+      $("#latency-filters").show();
     } else {
       alert("Invalid file name!");
       $("#fileUpload").val("");

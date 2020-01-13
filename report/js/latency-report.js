@@ -1,11 +1,12 @@
 $(document).ready(function() {
   $('#latency-filter-refresh').click(function() {
-    $("#latency-chart").html('');
     showLatencyResults();
   });
 });
 
 function showLatencyResults() {
+  $('#latency-chart').html('');
+  $('#loading-div').show();
   var chartDiv = $("<div id='latency-plotly-chart' />");
   $('#latency-chart').append(chartDiv)
   Plotly.plot('latency-plotly-chart', [{
@@ -13,7 +14,7 @@ function showLatencyResults() {
     type: 'line'
   }]);
   getLatencyDataForChart();
-  $("#loading-div").hide();
+  $('#loading-div').hide();
 }
 
 function getLatencyDataForChart() {

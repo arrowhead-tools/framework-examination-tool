@@ -32,7 +32,7 @@ function getLatencyDataForChart() {
         endpoint = cell.textContent;
       }
 
-      if (cellIndex == 3 && cell.textContent != 'latency_ms' && (usecase == usecaseFilter || usecaseFilter == "") && (endpoint == endpointFilter || endpointFilter == "")) {
+      if (cellIndex == 3 && cell.textContent != 'latency_ms' && (usecase == usecaseFilter || usecaseFilter == "none") && (endpoint == endpointFilter || endpointFilter == "none")) {
         var numb = cell.textContent.replace(/\D/g,'');
         Plotly.extendTraces('latency-plotly-chart', { y:[[numb]] }, [0]);
       }

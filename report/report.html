@@ -22,12 +22,14 @@
       </div>
       <div id="latency-container">
         <div id="latency-filters" style="display:none">
-          <datalist id="usecase-list"></datalist>
           <label for="usecase-filter">USE CASE:</label>
-          <input id="usecase-filter" type="text" list="usecase-list" size="50">
-          <datalist id="endpoint-list"></datalist>
+          <select id="usecase-filter">
+            <option value="none">No Filter</option>
+          </select>
           <label for="endpoint-filter">ENDPOINT:</label>
-          <input id="endpoint-filter" type="text" list="endpoint-list" size="50">
+          <select id="endpoint-filter">
+            <option value="none">No Filter</option>
+          </select>
           <br>
           <input id="latency-filter-refresh" type="button" name="" value=REFRESH>
         </div>

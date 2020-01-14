@@ -22,16 +22,21 @@
       </div>
       <div id="latency-container">
         <div id="latency-filters" style="display:none">
-          <label for="usecase-filter">USE CASE:</label>
-          <select id="usecase-filter">
-            <option value="none">No Filter</option>
-          </select>
-          <label for="endpoint-filter">ENDPOINT:</label>
-          <select id="endpoint-filter">
-            <option value="none">No Filter</option>
-          </select>
-          <br>
-          <input id="latency-filter-refresh" type="button" name="" value=REFRESH>
+          <div class="latency-filter-unit">
+            <label for="usecase-filter">USE CASE:</label>
+            <select id="usecase-filter" style="width: 670px">
+              <option value="none">No Filter</option>
+            </select>
+          </div>
+          <div class="latency-filter-unit">
+            <label for="endpoint-filter">ENDPOINT:</label>
+            <select id="endpoint-filter" style="width: 670px">
+              <option value="none">No Filter</option>
+            </select>
+          </div>
+          <div class="latency-filter-unit">
+              <input id="latency-filter-refresh" type="button" name="" value=REFRESH>
+          </div>
         </div>
         <div id="loading-div" style="display:none">LOADING CHART...</div>
         <div id="latency-chart"> </div>

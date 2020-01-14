@@ -27,14 +27,22 @@ td {
 }
 
 #latency-filters {
-  width: 1000px;
+  width: 770px;
   margin: auto;
   padding-top: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+  text-align: center;
 }
 
-#latency-filter-refresh {
+.latency-filter-unit {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
   margin-top: 20px;
+}
+
+#loading-div {
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  margin: 20px;
 }

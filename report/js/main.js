@@ -84,9 +84,12 @@ function readFullCSVLatency() {
                           $('#usecase-filter').append("<option value='" + cells[j] + "'>" + cells[j] + "</option>");
                           usecaseSet.add(cells[j]);
                         }
-                        if (j == 2 && cells[j] != 'endpoint' && !endpointSet.has(cells[j])) {
-                          $('#endpoint-filter').append("<option value='" + cells[j] + "'>" + cells[j] + "</option>");
-                          endpointSet.add(cells[j]);
+                        if (j == 2 && cells[j] != 'endpoint') {
+                          var normEndpoint = normalizeLatencyEndpoints(cells[j]);
+                          if (!endpointSet.has(normEndpoint)) {
+                            $('#endpoint-filter').append("<option value='" + normEndpoint + "'>" + normEndpoint + "</option>");
+                            endpointSet.add(normEndpoint);
+                          }
                         }
                     }
                     table.append(row);
@@ -105,4 +108,22 @@ function readFullCSVLatency() {
   } else {
       alert("Please upload a valid CSV file.");
   }
+}
+
+function normalizeLatencyEndpoints(endpoint) {
+  var i = 2;
+  var char = endpoint.charAt(endpoint.length - i);
+  if (!isNaN(char)) {
+      var numberString = "";
+      while (!isNaN(char)) {
+        numberString = char + numberString;
+        i++;
+        char = endpoint.charAt(endpoint.length - i);
+      }
+      return endpoint.replace(numberString, "{id}");
+  }
+
+  // TODO: further normalizations 
+
+  return endpoint;
 }

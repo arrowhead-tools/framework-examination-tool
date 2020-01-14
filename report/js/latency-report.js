@@ -12,13 +12,17 @@ function showLatencyResults() {
   var layout = {
     yaxis: {
       title: {
-        text: 'lantency (ms)'
-      }
+        text: 'latency (ms)'
+      },
+      rangemode: 'tozero',
+      autorange: true
     },
     xaxis: {
       title: {
-        text: 'timestamp (sent)'
-      }
+        text: 'number of requests'
+      },
+      rangemode: 'tozero',
+      autorange: true
     }
   };
   Plotly.plot('latency-plotly-chart', [{

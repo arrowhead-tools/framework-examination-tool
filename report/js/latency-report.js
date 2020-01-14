@@ -9,10 +9,22 @@ function showLatencyResults() {
   $('#loading-div').show();
   var chartDiv = $("<div id='latency-plotly-chart' />");
   $('#latency-chart').append(chartDiv)
+  var layout = {
+    yaxis: {
+      title: {
+        text: 'lantency (ms)'
+      }
+    },
+    xaxis: {
+      title: {
+        text: 'timestamp (sent)'
+      }
+    }
+  };
   Plotly.plot('latency-plotly-chart', [{
     y:[],
     type: 'line'
-  }]);
+  }], layout);
   getLatencyDataForChart();
 }
 

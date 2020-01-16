@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Arrowhead FW examination report</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="js/dependencies/plotly.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/assert-report.js"></script>
+    <script src="js/latency-report.js"></script>
+  </head>
+  <body>
+    <div id="hero">
+      <input type="file" id="fileUpload" style="width: 400px" />
+      <input type="button" id="upload" value="Upload" />
+      <hr />
+      <div id="assert-container">
+        <div id="assert-sum-table"> </div>
+        <div id="assert-error-table"> </div>
+        <div id="assert-csv" style="display:none"> </div>
+      </div>
+      <div id="latency-container">
+        <div id="latency-filters" style="display:none">
+          <div class="latency-filter-unit">
+            <label for="usecase-filter">USE CASE:</label>
+            <select id="usecase-filter" style="width: 670px">
+              <option value="none">No Filter</option>
+            </select>
+          </div>
+          <div class="latency-filter-unit">
+            <label for="endpoint-filter">ENDPOINT:</label>
+            <select id="endpoint-filter" style="width: 670px">
+              <option value="none">No Filter</option>
+            </select>
+          </div>
+          <div class="latency-filter-unit">
+              <input id="latency-filter-refresh" type="button" name="" value=REFRESH>
+          </div>
+        </div>
+        <div id="loading-div" style="display:none">LOADING CHART...</div>
+        <div id="latency-chart"> </div>
+        <div id="latency-csv" style="display:none"> </div>
+      </div>
+    </div>
+  </body>
+</html>

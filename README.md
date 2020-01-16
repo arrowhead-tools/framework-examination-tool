@@ -12,6 +12,15 @@ The project has the following dependencies:
 * **Register provider with service then delete system and service definition** (SystemOperatorUseCase)
 * **Orchestration load test** (ApplicationSystemUseCase)
 
+### How to use?
+
+* Clone or fork the repository.
+* Set your Sevrice Registry address and port in `application.properties` located in src/main/resources folder.
+* Compile the source code with `mvn clean install`.
+* Start your Arrowhead Framewrok.
+* Start examination tool with `java -jar framework-examination-tool-1.0.0.jar` located in target folder.
+* Open the `report.hmtl` located in report folder and upload the report csv files from the same folder.
+
 ### How to implement new test scenarios?
 
 A new scenario is possible to easily implement by creating a new java class within one of the following packages:

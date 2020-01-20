@@ -27,4 +27,6 @@ A new scenario is possible to easily implement by creating a new java class with
 * eu.arrowhead.tool.examination.use_case.system_operator
 * eu.arrowhead.tool.examination.use_case.application_system
 
-Depending on the scenario the `SystemOperatorUseCase` or the `ApplicationSystemUseCase` have to be extened and the `public void runUseCase()` method have to be override with your scenario. Upon application start-up it will be automatically detected, ran and reported.
+Depending on the scenario the `SystemOperatorUseCase` or the `ApplicationSystemUseCase` have to be extened and the `public void runUseCase()` method have to be overridden with your scenario. Use the provided `request(...)` methods to raise an HTTP(S) request and the various `assert...(...)` methods to verify the responses.
+
+Upon application start-up it will be automatically detected, ran and reported.

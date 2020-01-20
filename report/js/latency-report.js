@@ -46,7 +46,7 @@ function getLatencyDataForChart() {
             usecase = cell.textContent;
           }
           if (cellIndex == 2) {
-            endpoint = cell.textContent;
+            endpoint = normalizeLatencyEndpoints(cell.textContent);
           }
 
           if (cellIndex == 3 && cell.textContent != 'latency_ms' && (usecase == usecaseFilter || usecaseFilter == "none") && (endpoint == endpointFilter || endpointFilter == "none")) {

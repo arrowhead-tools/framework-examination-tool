@@ -10,12 +10,15 @@ import org.springframework.util.Assert;
 
 import eu.arrowhead.common.CommonConstants;
 import eu.arrowhead.common.core.CoreSystem;
+import eu.arrowhead.common.dto.shared.CloudRequestDTO;
 import eu.arrowhead.common.dto.shared.ServiceRegistryRequestDTO;
 import eu.arrowhead.common.dto.shared.ServiceSecurityType;
 import eu.arrowhead.common.dto.shared.SystemRequestDTO;
 import eu.arrowhead.common.exception.InvalidParameterException;
+import eu.arrowhead.tool.examination.controller.dto.RelayRequestDTO;
+import eu.arrowhead.tool.examination.controller.dto.RelayType;
 
-public class ExminationUtil {
+public class ExaminationUtil {
 	
 	//=================================================================================================
 	// members
@@ -55,7 +58,7 @@ public class ExminationUtil {
 	public static SystemRequestDTO generateSystemRequestDTO() {
 		final SystemRequestDTO systemRequestDTO = new SystemRequestDTO();
 		systemRequestDTO.setSystemName("examination" + new Random(System.currentTimeMillis()).nextInt());
-		systemRequestDTO.setAddress( getRandomNumber(0, 100) + "." + getRandomNumber(0, 100) + "." + getRandomNumber(0, 100) + "." + getRandomNumber(0, 100));
+		systemRequestDTO.setAddress(getRandomNumber(0, 100) + "." + getRandomNumber(0, 100) + "." + getRandomNumber(0, 100) + "." + getRandomNumber(0, 100));
 		systemRequestDTO.setPort(getRandomNumber(1000, 65535));
 		systemRequestDTO.setAuthenticationInfo("EXAMINATION" + getRandomNumber(1000000, 100000000));
 		return systemRequestDTO;
@@ -75,6 +78,28 @@ public class ExminationUtil {
 		interfaces.add("HTTPS-SECURE-JSON");
 		serviceRegistryRequestDTO.setInterfaces(interfaces);
 		return serviceRegistryRequestDTO;
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	public static RelayRequestDTO generateRelayRequestDTO(final RelayType type, final boolean exclusive, final boolean secure) {
+		final RelayRequestDTO relayRequestDTO = new RelayRequestDTO();
+		relayRequestDTO.setAddress(getRandomNumber(0, 100) + "." + getRandomNumber(0, 100) + "." + getRandomNumber(0, 100) + "." + getRandomNumber(0, 100));
+		relayRequestDTO.setPort(getRandomNumber(1000, 65535));
+		relayRequestDTO.setExclusive(exclusive);
+		relayRequestDTO.setSecure(secure);
+		relayRequestDTO.setType(type.name());
+		return relayRequestDTO;
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	public static CloudRequestDTO generateCloudRequestDTOWithoutRelays(final boolean secure, final boolean neighbor) {
+		CloudRequestDTO cloudRequestDTO = new CloudRequestDTO();
+		cloudRequestDTO.setOperator("examination" + new Random(System.currentTimeMillis()).nextInt());
+		cloudRequestDTO.setName("examination" + new Random(System.currentTimeMillis()).nextInt() + 1);
+		cloudRequestDTO.setSecure(secure);
+		cloudRequestDTO.setNeighbor(neighbor);
+		cloudRequestDTO.setAuthenticationInfo("EXAMINATION" + getRandomNumber(1000000, 100000000));
+		return cloudRequestDTO;
 	}
 	
 	//-------------------------------------------------------------------------------------------------

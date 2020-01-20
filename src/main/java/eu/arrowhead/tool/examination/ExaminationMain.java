@@ -25,7 +25,7 @@ import eu.arrowhead.tool.examination.controller.dto.SystemListResponseDTO;
 import eu.arrowhead.tool.examination.use_case.ApplicationSystemUseCase;
 import eu.arrowhead.tool.examination.use_case.SystemOperatorUseCase;
 import eu.arrowhead.tool.examination.use_case.UseCasesToRun;
-import eu.arrowhead.tool.examination.util.ExminationUtil;
+import eu.arrowhead.tool.examination.util.ExaminationUtil;
 import eu.arrowhead.tool.examination.util.MgmtUri;
 
 @SpringBootApplication
@@ -70,12 +70,12 @@ public class ExaminationMain implements ApplicationRunner {
 	private void checkCoreSystems() {
 		ResponseEntity<SystemListResponseDTO> systemListDTO = null;
 		try {
-			httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort,
+			httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExaminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort,
 									CommonConstants.SERVICE_REGISTRY_URI + CommonConstants.ECHO_URI), HttpMethod.GET, String.class, "CheckCoreSystems");
 			logger.info(CoreSystem.SERVICE_REGISTRY.name() + " Core System is reachable on: " + serviceRegistryAddress + ":" + serviceRegistryPort);
 			CoreSystems.serviceRegistryAddress = serviceRegistryAddress;
 			CoreSystems.serviceRegistryPort = serviceRegistryPort;
-			systemListDTO = httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort, MgmtUri.SERVICE_REGISTRY_MGMT_SYSTEMS),
+			systemListDTO = httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExaminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort, MgmtUri.SERVICE_REGISTRY_MGMT_SYSTEMS),
 													HttpMethod.GET, SystemListResponseDTO.class, "CheckCoreSystems");
 		} catch (final Exception ex) {
 			logger.info(CoreSystem.SERVICE_REGISTRY.name() + " Core System is not reachable on: " + serviceRegistryAddress + ":" + serviceRegistryPort);
@@ -90,8 +90,8 @@ public class ExaminationMain implements ApplicationRunner {
 					storeCoreSystemAddress(coreSystem, address, port);
 					logger.info(coreSystem.name() + " is registered");
 					try {
-						httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExminationUtil.getUriScheme(sslEnabled), address, port,
-												ExminationUtil.getCoreSystemUri(coreSystem) + CommonConstants.ECHO_URI), HttpMethod.GET, String.class, "CheckCoreSystems");
+						httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExaminationUtil.getUriScheme(sslEnabled), address, port,
+												ExaminationUtil.getCoreSystemUri(coreSystem) + CommonConstants.ECHO_URI), HttpMethod.GET, String.class, "CheckCoreSystems");
 						logger.info(coreSystem.name() + " Core System is reachable on: " + address + ":" + port);
 					} catch (final Exception ex) {
 						logger.info(coreSystem.name() + " Core System is not reachable on: " + address + ":" + port);

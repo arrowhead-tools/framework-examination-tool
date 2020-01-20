@@ -114,16 +114,15 @@ function normalizeLatencyEndpoints(endpoint) {
   var i = 2;
   var char = endpoint.charAt(endpoint.length - i);
   if (!isNaN(char)) {
-      var numberString = "";
       while (!isNaN(char)) {
-        numberString = char + numberString;
         i++;
         char = endpoint.charAt(endpoint.length - i);
       }
-      return endpoint.replace(numberString, "{id}");
+      endpoint = endpoint.slice(0, endpoint.length - i + 1);
+      return endpoint + '{id}"';
   }
 
-  // TODO: further normalizations 
+  // TODO: further normalizations
 
   return endpoint;
 }

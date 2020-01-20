@@ -30,7 +30,7 @@ import eu.arrowhead.tool.examination.config.ReporterType;
 import eu.arrowhead.tool.examination.controller.dto.AuthorizationIntraCloudCheckResponseDTO;
 import eu.arrowhead.tool.examination.controller.dto.AuthorizationIntraCloudRequestDTO;
 import eu.arrowhead.tool.examination.use_case.ApplicationSystemUseCase;
-import eu.arrowhead.tool.examination.util.ExminationUtil;
+import eu.arrowhead.tool.examination.util.ExaminationUtil;
 import eu.arrowhead.tool.examination.util.MgmtUri;
 
 @Component
@@ -54,17 +54,17 @@ public class OrchestrationLoadTest extends ApplicationSystemUseCase {
 	public void runUseCase() {
 		
 		//Register consumer
-		final SystemRequestDTO consumerRequest = ExminationUtil.generateSystemRequestDTO();
+		final SystemRequestDTO consumerRequest = ExaminationUtil.generateSystemRequestDTO();
 		consumerRequest.setSystemName(conumerSystemName);
 		final ResponseEntity<SystemResponseDTO> consumerResponse = request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_MGMT_SYSTEMS), HttpMethod.POST, SystemResponseDTO.class, consumerRequest);
 		
 		//Register providers
-		final ServiceRegistryRequestDTO serviceRegistryRequest = ExminationUtil.generateServiceRegistryRequestDTO(ExminationUtil.generateSystemRequestDTO());
+		final ServiceRegistryRequestDTO serviceRegistryRequest = ExaminationUtil.generateServiceRegistryRequestDTO(ExaminationUtil.generateSystemRequestDTO());
 		final List<Long> registeredProviderIDs = new ArrayList<>();
 		long serviceDefinitionID = 0;
 		long interfaceID = 0;
 		for (int i = 0; i < numberOfProviderWithSameService; ++i) {
-			final SystemRequestDTO systemRequest = ExminationUtil.generateSystemRequestDTO();
+			final SystemRequestDTO systemRequest = ExaminationUtil.generateSystemRequestDTO();
 			serviceRegistryRequest.setProviderSystem(systemRequest);
 			final ResponseEntity<SystemResponseDTO> systemResponse = request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_MGMT_SYSTEMS), HttpMethod.POST, SystemResponseDTO.class, systemRequest);
 			final ResponseEntity<ServiceRegistryResponseDTO> serviceRegistryResponse = request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_MGMT), HttpMethod.POST, ServiceRegistryResponseDTO.class, serviceRegistryRequest);

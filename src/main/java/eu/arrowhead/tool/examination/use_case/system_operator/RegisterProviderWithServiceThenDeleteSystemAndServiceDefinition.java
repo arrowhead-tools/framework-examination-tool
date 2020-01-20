@@ -17,7 +17,7 @@ import eu.arrowhead.common.exception.InvalidParameterException;
 import eu.arrowhead.tool.examination.config.CoreSystems;
 import eu.arrowhead.tool.examination.config.HttpActor;
 import eu.arrowhead.tool.examination.use_case.SystemOperatorUseCase;
-import eu.arrowhead.tool.examination.util.ExminationUtil;
+import eu.arrowhead.tool.examination.util.ExaminationUtil;
 import eu.arrowhead.tool.examination.util.MgmtUri;
 
 @Component
@@ -29,8 +29,8 @@ public class RegisterProviderWithServiceThenDeleteSystemAndServiceDefinition ext
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	public void runUseCase() {
-		final SystemRequestDTO providerRequest = ExminationUtil.generateSystemRequestDTO();
-		final ServiceRegistryRequestDTO serviceRegistryRequest = ExminationUtil.generateServiceRegistryRequestDTO(providerRequest);
+		final SystemRequestDTO providerRequest = ExaminationUtil.generateSystemRequestDTO();
+		final ServiceRegistryRequestDTO serviceRegistryRequest = ExaminationUtil.generateServiceRegistryRequestDTO(providerRequest);
 		
 		final ResponseEntity<SystemResponseDTO> providerResponse = request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_MGMT_SYSTEMS), HttpMethod.POST, SystemResponseDTO.class, providerRequest);
 		final ResponseEntity<ServiceRegistryResponseDTO> serviceRegistryResponse = request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_MGMT), HttpMethod.POST, ServiceRegistryResponseDTO.class, serviceRegistryRequest);
@@ -45,7 +45,7 @@ public class RegisterProviderWithServiceThenDeleteSystemAndServiceDefinition ext
 	}
 	
 	//=================================================================================================
-	// methods
+	// assistant methods
 	
 	//-------------------------------------------------------------------------------------------------
 	private void verifySystemResponse(final SystemRequestDTO request, final SystemResponseDTO response) {

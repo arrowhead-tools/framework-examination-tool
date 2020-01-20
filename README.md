@@ -23,7 +23,7 @@ The project has the following dependencies:
 
 ### How to implement new test scenarios?
 
-A new scenario is possible to easily implement by creating a new java class within one of the following packages and annotated with `@Copmonent`.
+A new scenario is possible to easily implement by creating a new java class within one of the following packages and annotated with `@Component`.
 * eu.arrowhead.tool.examination.use_case.system_operator
 * eu.arrowhead.tool.examination.use_case.application_system
 

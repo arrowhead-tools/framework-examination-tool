@@ -69,14 +69,15 @@ public class ExaminationAssert {
 	//-------------------------------------------------------------------------------------------------
 	public void assertExpectException(final Class<?> expected, final Exception actual, final String remark) {
 		Assert.notNull(expected, "assert expected exception cannot be null");
-		Assert.notNull(actual, "assert actual exception cannot be null");
 		Assert.notNull(remark, "assert remark cannot be null");
 		
 		final List<String[]> reportSet = new ArrayList<>();
-		if (expected.getTypeName().equalsIgnoreCase(actual.getClass().getTypeName())) {
-			reportSet.add(new String[] { this.getClass().getSimpleName(), expected.getTypeName(), actual.getClass().getTypeName(), STATUS_OK, remark });
-		} else {
+		if (actual == null) {
+			reportSet.add(new String[] { this.getClass().getSimpleName(), expected.getTypeName(), "no exception", STATUS_NOT_OK, remark });
+		} else if (!expected.getTypeName().equalsIgnoreCase(actual.getClass().getTypeName())) {
 			reportSet.add(new String[] { this.getClass().getSimpleName(), expected.getTypeName(), actual.getClass().getTypeName(), STATUS_NOT_OK, remark });
+		} else {
+			reportSet.add(new String[] { this.getClass().getSimpleName(), expected.getTypeName(), actual.getClass().getTypeName(), STATUS_OK, remark });
 		}
 		report(reportSet);
 	}

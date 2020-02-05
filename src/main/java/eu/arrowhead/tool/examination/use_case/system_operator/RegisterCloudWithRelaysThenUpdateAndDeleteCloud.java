@@ -38,8 +38,7 @@ public class RegisterCloudWithRelaysThenUpdateAndDeleteCloud extends SystemOpera
 		final ResponseEntity<RelayListResponseDTO> gatekeeperRelayResponse = request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getGatekeeperUri(MgmtUri.GATEKEEPER_RELAYS), HttpMethod.POST, RelayListResponseDTO.class, List.of(gatekeeperRelay));
 		final ResponseEntity<RelayListResponseDTO> gatewayRelayResponse = request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getGatekeeperUri(MgmtUri.GATEKEEPER_RELAYS), HttpMethod.POST, RelayListResponseDTO.class, List.of(gatewayRelay));
 		verifyRelayResponse(gatekeeperRelayResponse.getBody().getData().get(0), gatekeeperRelay);
-		verifyRelayResponse(gatewayRelayResponse.getBody().getData().get(0), gatewayRelay);
-		
+		verifyRelayResponse(gatewayRelayResponse.getBody().getData().get(0), gatewayRelay);		
 		
 		//Register cloud with relays
 		neighborCloud.setGatekeeperRelayIds(List.of(gatekeeperRelayResponse.getBody().getData().get(0).getId()));
@@ -49,10 +48,13 @@ public class RegisterCloudWithRelaysThenUpdateAndDeleteCloud extends SystemOpera
 		
 		//Update cloud without gatekeeper relay list
 		final CloudRequestDTO neighborCloudUpdated = ExaminationUtil.generateCloudRequestDTOWithoutRelays(true, true);
+		Exception actualException = null;
 		try {
 			request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getGatekeeperUri(MgmtUri.GATEKEEPER_CLOUDS + "/" + String.valueOf(neighborCloudResponse.getBody().getData().get(0).getId())), HttpMethod.PUT, CloudWithRelaysResponseDTO.class, neighborCloudUpdated);
 		} catch (final ArrowheadException ex) {
-			assertExpectException(InvalidParameterException.class, ex, "Cloud without gatekeeper relays shouldn't be exists");
+			actualException = ex;
+		} finally {
+			assertExpectException(InvalidParameterException.class, actualException, "Cloud without gatekeeper relays shouldn't be exists");			
 		}
 		
 		//Update cloud with gatekeeper relay list, but without gateway relay list

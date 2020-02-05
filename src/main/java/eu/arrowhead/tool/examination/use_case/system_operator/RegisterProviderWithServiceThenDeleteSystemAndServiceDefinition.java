@@ -93,22 +93,31 @@ public class RegisterProviderWithServiceThenDeleteSystemAndServiceDefinition ext
 	
 	//-------------------------------------------------------------------------------------------------
 	private void verifyDeleteRequests(final SystemResponseDTO systemResponse, final ServiceRegistryResponseDTO serviceRegistryResponse) {
+		Exception actualException1 = null;
 		try {			
 			request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_MGMT_SYSTEMS + "/" + String.valueOf(systemResponse.getId())), HttpMethod.GET, SystemResponseDTO.class);
 		} catch (final Exception ex) {
-			assertExpectException(InvalidParameterException.class, ex, "No system id should exists after delete the provider");
+			actualException1 = ex;
+		} finally {
+			assertExpectException(InvalidParameterException.class, actualException1, "No system id should exists after delete the provider");			
 		}
 		
+		Exception actualException2 = null;
 		try {			
 			request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_MGMT + "/" + String.valueOf(serviceRegistryResponse.getId())), HttpMethod.GET, ServiceRegistryResponseDTO.class);
 		} catch (final Exception ex) {
-			assertExpectException(InvalidParameterException.class, ex, "No srEntry id shloud exists after delete the provider system");
+			actualException2 = ex;
+		} finally {
+			assertExpectException(InvalidParameterException.class, actualException2, "No srEntry id shloud exists after delete the provider system");
 		}
 		
+		Exception actualException3 = null;
 		try {			
 			request(HttpActor.SYSTEM_OPERATOR, CoreSystems.getServiceRegistryUri(MgmtUri.SERVICE_REGISTRY_MGMT_SERVICES + "/" + String.valueOf(serviceRegistryResponse.getServiceDefinition().getId())), HttpMethod.GET, ServiceDefinitionResponseDTO.class);
 		} catch (final Exception ex) {
-			assertExpectException(InvalidParameterException.class, ex, "No service definition id should exists after delete the service definition");
+			actualException3 = ex;
+		} finally {
+			assertExpectException(InvalidParameterException.class, actualException3, "No service definition id should exists after delete the service definition");
 		}
 	}
 }

@@ -10,13 +10,14 @@ The project has the following dependencies:
 ### Currently available test scenarios
 
 * **Register provider with service then delete system and service definition** (SystemOperatorUseCase)
-* **Register cloud with relays then delete cloud** (SystemOperatorUseCase)
+* **Register cloud with relays then update and delete cloud** (SystemOperatorUseCase)
 * **Orchestration load test** (ApplicationSystemUseCase)
 
 ### How to use?
 
 * Clone or fork the repository.
 * Set your Sevrice Registry address and port in `application.properties` located in src/main/resources folder.
+* Provide new certificates if necessary and set its properties in `application.properties` file.
 * Compile the source code with `mvn clean install`.
 * Start your Arrowhead Framewrok.
 * Start examination tool with `java -jar framework-examination-tool-1.0.0.jar` located in target folder.

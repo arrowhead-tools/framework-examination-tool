@@ -10,7 +10,7 @@ The project has the following dependencies:
 ### Currently available test scenarios
 
 * **Register provider with service then delete system and service definition** (SystemOperatorUseCase)
-* **Register cloud with relays then delete cloud** (SystemOperatorUseCase)
+* **Register cloud with relays then update and delete cloud** (SystemOperatorUseCase)
 * **Orchestration load test** (ApplicationSystemUseCase)
 
 ### How to use?

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import eu.arrowhead.common.dto.shared.CloudRequestDTO;
 import eu.arrowhead.common.exception.ArrowheadException;
-import eu.arrowhead.common.exception.BadPayloadException;
 import eu.arrowhead.common.exception.InvalidParameterException;
 import eu.arrowhead.tool.examination.config.CoreSystems;
 import eu.arrowhead.tool.examination.config.HttpActor;

@@ -104,6 +104,8 @@ public class RegisterCloudWithRelaysThenUpdateAndDeleteCloud extends SystemOpera
 			assertEqualsIgnoreCaseWithTrim(request.getAuthenticationInfo(), response.getAuthenticationInfo(), "Cloud auth info in request and in response must be the same");
 		}
 		assertEqualsIgnoreCaseWithTrim(String.valueOf(request.getGatekeeperRelayIds().get(0)), String.valueOf(response.getGatekeeperRelays().get(0).getId()), "Cloud gatekeeper id in request and in response must be the same");
-		assertEqualsIgnoreCaseWithTrim(String.valueOf(request.getGatewayRelayIds().get(0)), String.valueOf(response.getGatewayRelays().get(0).getId()), "Cloud gateway id in request and in response must be the same");
+		if (request.getGatewayRelayIds() != null && !request.getGatewayRelayIds().isEmpty()) {			
+			assertEqualsIgnoreCaseWithTrim(String.valueOf(request.getGatewayRelayIds().get(0)), String.valueOf(response.getGatewayRelays().get(0).getId()), "Cloud gateway id in request and in response must be the same");
+		}
 	}
 }

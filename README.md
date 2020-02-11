@@ -22,6 +22,7 @@ The project has the following dependencies:
 * Start your Arrowhead Framewrok.
 * Start examination tool with `java -jar framework-examination-tool-1.0.0.jar` located in target folder.
   - Use the `--skipSysOp` argument to skip the System Operator and the `--skipAppSys` to skip the Application System use cases.
+  - Use the `--skip{CoreSystemName}` argument to skip the specified core system related use cases.
 * Open the `report.hmtl` located in report folder and upload the report csv files from the same folder.
 
 ### How to implement new test scenarios?

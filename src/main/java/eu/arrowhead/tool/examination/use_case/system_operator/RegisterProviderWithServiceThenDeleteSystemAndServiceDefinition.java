@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import eu.arrowhead.common.core.CoreSystem;
 import eu.arrowhead.common.dto.shared.ServiceDefinitionResponseDTO;
 import eu.arrowhead.common.dto.shared.ServiceInterfaceResponseDTO;
 import eu.arrowhead.common.dto.shared.ServiceRegistryRequestDTO;
@@ -25,7 +26,12 @@ public class RegisterProviderWithServiceThenDeleteSystemAndServiceDefinition ext
 	
 	//=================================================================================================
 	// methods
-	
+
+	//-------------------------------------------------------------------------------------------------
+	public RegisterProviderWithServiceThenDeleteSystemAndServiceDefinition() {
+		super(true, CoreSystem.SERVICE_REGISTRY);
+	}
+
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	public void runUseCase() {
@@ -80,8 +86,8 @@ public class RegisterProviderWithServiceThenDeleteSystemAndServiceDefinition ext
 		}
 		
 		assertEqualsIgnoreCaseWithTrim(String.valueOf(request.getInterfaces().size()), String.valueOf(response.getInterfaces().size()), "Size of interface list in request and in response must be the same");		
-		List<String> responseInterfaceNames = new ArrayList<>();
-		for (ServiceInterfaceResponseDTO interface_ : response.getInterfaces()) {
+		final List<String> responseInterfaceNames = new ArrayList<>();
+		for (final ServiceInterfaceResponseDTO interface_ : response.getInterfaces()) {
 			responseInterfaceNames.add(interface_.getInterfaceName().toUpperCase().trim());
 		}
 		assertEqualsStringLists(request.getInterfaces(), responseInterfaceNames, "Interface list content in request and in response must be the same");

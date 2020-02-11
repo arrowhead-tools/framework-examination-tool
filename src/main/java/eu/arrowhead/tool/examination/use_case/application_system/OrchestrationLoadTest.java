@@ -16,6 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import eu.arrowhead.common.core.CoreSystem;
 import eu.arrowhead.common.dto.shared.OrchestrationFormRequestDTO;
 import eu.arrowhead.common.dto.shared.OrchestrationResponseDTO;
 import eu.arrowhead.common.dto.shared.ServiceQueryFormDTO;
@@ -37,8 +38,8 @@ import eu.arrowhead.tool.examination.util.MgmtUri;
 public class OrchestrationLoadTest extends ApplicationSystemUseCase {
 	
 	//=================================================================================================
-	// members
-	
+	// members	
+
 	@Value("${client_system_name}")
 	private String conumerSystemName;
 	
@@ -48,6 +49,11 @@ public class OrchestrationLoadTest extends ApplicationSystemUseCase {
 	
 	//=================================================================================================
 	// methods
+	
+	//-------------------------------------------------------------------------------------------------
+	public OrchestrationLoadTest() {
+		super(true, CoreSystem.SERVICE_REGISTRY, CoreSystem.AUTHORIZATION, CoreSystem.ORCHESTRATOR);
+	}
 	
 	//-------------------------------------------------------------------------------------------------
 	@Override
@@ -90,7 +96,7 @@ public class OrchestrationLoadTest extends ApplicationSystemUseCase {
 		for (int i = 0; i < numberOfOrchestrationRequestToBeSent; i++) {
 			try {
 				queue.take();
-			} catch (InterruptedException e) {
+			} catch (final InterruptedException e) {
 				//TODO
 			}
 		}

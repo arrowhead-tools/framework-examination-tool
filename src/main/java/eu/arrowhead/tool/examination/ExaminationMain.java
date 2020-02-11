@@ -1,5 +1,8 @@
 package eu.arrowhead.tool.examination;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,7 @@ import eu.arrowhead.tool.examination.config.ReporterType;
 import eu.arrowhead.tool.examination.controller.dto.SystemListResponseDTO;
 import eu.arrowhead.tool.examination.use_case.ApplicationSystemUseCase;
 import eu.arrowhead.tool.examination.use_case.SystemOperatorUseCase;
+import eu.arrowhead.tool.examination.use_case.UseCase;
 import eu.arrowhead.tool.examination.use_case.UseCasesToRun;
 import eu.arrowhead.tool.examination.util.ExaminationUtil;
 import eu.arrowhead.tool.examination.util.MgmtUri;
@@ -59,19 +63,21 @@ public class ExaminationMain implements ApplicationRunner {
 	public void run(final ApplicationArguments args) throws Exception {
 		new Reporter(ReporterType.LATENCY);
 		new Reporter(ReporterType.ASSERT);
-		checkCoreSystems();
-		runUseCases();
+		final Set<CoreSystem> registeredCoreSystems = checkCoreSystems();
+		runUseCases(registeredCoreSystems, args);
 		System.exit(0);
 	}
 	
 	//=================================================================================================
 	// assistant methods
 	
-	private void checkCoreSystems() {
+	private Set<CoreSystem> checkCoreSystems() {
+		final Set<CoreSystem> registeredCoreSystems = new HashSet<>();
 		ResponseEntity<SystemListResponseDTO> systemListDTO = null;
 		try {
 			httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExaminationUtil.getUriScheme(sslEnabled), serviceRegistryAddress, serviceRegistryPort,
 									CommonConstants.SERVICE_REGISTRY_URI + CommonConstants.ECHO_URI), HttpMethod.GET, String.class, "CheckCoreSystems");
+			registeredCoreSystems.add(CoreSystem.SERVICE_REGISTRY);
 			logger.info(CoreSystem.SERVICE_REGISTRY.name() + " Core System is reachable on: " + serviceRegistryAddress + ":" + serviceRegistryPort);
 			CoreSystems.serviceRegistryAddress = serviceRegistryAddress;
 			CoreSystems.serviceRegistryPort = serviceRegistryPort;
@@ -89,6 +95,7 @@ public class ExaminationMain implements ApplicationRunner {
 					final int port = system.getPort();
 					storeCoreSystemAddress(coreSystem, address, port);
 					logger.info(coreSystem.name() + " is registered");
+					registeredCoreSystems.add(coreSystem);
 					try {
 						httpService.sendRequest(HttpActor.SYSTEM_OPERATOR, Utilities.createURI(ExaminationUtil.getUriScheme(sslEnabled), address, port,
 												ExaminationUtil.getCoreSystemUri(coreSystem) + CommonConstants.ECHO_URI), HttpMethod.GET, String.class, "CheckCoreSystems");
@@ -100,15 +107,26 @@ public class ExaminationMain implements ApplicationRunner {
 				}
 			}
 		}
+		return registeredCoreSystems;
 	}
 	
 	//-------------------------------------------------------------------------------------------------
-	private void runUseCases() {
-		for (final SystemOperatorUseCase uc : UseCasesToRun.getSystemOperator()) {
-			uc.start();
+	private void runUseCases(final Set<CoreSystem> registeredCoreSystems, final ApplicationArguments args) {
+		if (!args.containsOption("skipSysOp")) {
+			for (final SystemOperatorUseCase uc : UseCasesToRun.getSystemOperator()) {
+				if (skipUseCase(uc, registeredCoreSystems, args)) {
+					continue;
+				}
+				uc.start();
+			}			
 		}
-		for (final ApplicationSystemUseCase uc : UseCasesToRun.getApplicationSystem()) {
-			uc.start();
+		if (!args.containsOption("skipAppSys")) {			
+			for (final ApplicationSystemUseCase uc : UseCasesToRun.getApplicationSystem()) {
+				if (skipUseCase(uc, registeredCoreSystems, args)) {
+					continue;
+				}
+				uc.start();
+			}
 		}
 	}
 	
@@ -142,5 +160,27 @@ public class ExaminationMain implements ApplicationRunner {
 		default:
 			throw new IllegalArgumentException("Core system not known: " + coreSystem.name());
 		}
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	private boolean skipUseCase(final UseCase uc, final Set<CoreSystem> registeredCoreSystems, final ApplicationArguments args) {
+		if (!uc.isUseCaseActive()) {
+			return true;
+		}
+		boolean skipDueToCoreSystem = false;
+		for (final CoreSystem coreSystem : uc.getNecesarryCoreSystems()) {
+			if (!registeredCoreSystems.contains(coreSystem)) {
+				skipDueToCoreSystem = true;
+			}
+			for (final String optionNames : args.getOptionNames()) {
+				if (optionNames.equalsIgnoreCase("skip" + coreSystem.name().replace("_", ""))) {
+					skipDueToCoreSystem = true;
+				}
+			}
+		}
+		if (skipDueToCoreSystem) {
+			return true;
+		}
+		return false;
 	}
 }

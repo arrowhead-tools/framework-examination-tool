@@ -3,7 +3,9 @@ package eu.arrowhead.tool.examination.use_case;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.net.ssl.SSLContext;
 
@@ -14,6 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.util.UriComponents;
 
+import eu.arrowhead.common.core.CoreSystem;
 import eu.arrowhead.tool.examination.config.ExaminationHttpService;
 import eu.arrowhead.tool.examination.config.HttpActor;
 import eu.arrowhead.tool.examination.config.Reporter;
@@ -25,6 +28,9 @@ public class ApplicationSystemUseCase extends ExaminationAssert implements UseCa
 	//=================================================================================================
 	// members
 	
+	private final Set<CoreSystem> necesarryCoreSystems = new HashSet<>();
+	private final boolean isActive;
+	
 	@Autowired
 	protected ExaminationHttpService httpService;
 	private final Logger logger = LogManager.getLogger(this.getClass());
@@ -33,7 +39,11 @@ public class ApplicationSystemUseCase extends ExaminationAssert implements UseCa
 	// methods
 
 	//-------------------------------------------------------------------------------------------------
-	public ApplicationSystemUseCase() {
+	public ApplicationSystemUseCase(final boolean isActive, final CoreSystem... coreSystems) {
+		this.isActive = isActive;
+		for (final CoreSystem cs : coreSystems) {
+			necesarryCoreSystems.add(cs);
+		}
 		UseCasesToRun.getApplicationSystem().add(this);
 	}
 	
@@ -55,6 +65,18 @@ public class ApplicationSystemUseCase extends ExaminationAssert implements UseCa
 				logger.error("CSV reporting error occured");
 			}
 		}		
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	@Override
+	public boolean isUseCaseActive() {
+		return isActive;
+	}
+	
+	//-------------------------------------------------------------------------------------------------
+	@Override
+	public Set<CoreSystem> getNecesarryCoreSystems() {
+		return necesarryCoreSystems;
 	}
 	
 	//-------------------------------------------------------------------------------------------------

@@ -6,6 +6,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import eu.arrowhead.common.core.CoreSystem;
 import eu.arrowhead.common.dto.shared.CloudRequestDTO;
 import eu.arrowhead.common.exception.ArrowheadException;
 import eu.arrowhead.common.exception.InvalidParameterException;
@@ -27,6 +28,11 @@ public class RegisterCloudWithRelaysThenUpdateAndDeleteCloud extends SystemOpera
 	//=================================================================================================
 	// methods
 	
+	//-------------------------------------------------------------------------------------------------
+	public RegisterCloudWithRelaysThenUpdateAndDeleteCloud() {
+		super(true, CoreSystem.GATEKEEPER);
+	}
+
 	//-------------------------------------------------------------------------------------------------
 	@Override
 	public void runUseCase() {

@@ -60,7 +60,7 @@ public class ExaminationMain implements ApplicationRunner {
 		new Reporter(ReporterType.LATENCY);
 		new Reporter(ReporterType.ASSERT);
 		checkCoreSystems();
-		runUseCases();
+		runUseCases(args.containsOption("skipSysOp"), args.containsOption("skipAppSys"));
 		System.exit(0);
 	}
 	
@@ -103,12 +103,16 @@ public class ExaminationMain implements ApplicationRunner {
 	}
 	
 	//-------------------------------------------------------------------------------------------------
-	private void runUseCases() {
-		for (final SystemOperatorUseCase uc : UseCasesToRun.getSystemOperator()) {
-			uc.start();
+	private void runUseCases(final boolean skipSysOp, final boolean skipAppSys) {
+		if (!skipSysOp) {
+			for (final SystemOperatorUseCase uc : UseCasesToRun.getSystemOperator()) {
+				uc.start();
+			}			
 		}
-		for (final ApplicationSystemUseCase uc : UseCasesToRun.getApplicationSystem()) {
-			uc.start();
+		if (!skipAppSys) {			
+			for (final ApplicationSystemUseCase uc : UseCasesToRun.getApplicationSystem()) {
+				uc.start();
+			}
 		}
 	}
 	
